@@ -159,6 +159,10 @@
     "placeholders": { "error": { "type": "String" } }
   },
 
+  "readerTitle": "Lecture",
+  "readerActionRead": "Lire",
+  "readerNoContent": "Aucun contenu disponible pour la lecture hors-ligne.",
+
   "commonCancel": "Annuler",
   "commonDelete": "Supprimer",
   "commonOk": "Ok",

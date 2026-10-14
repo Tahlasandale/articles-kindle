@@ -351,6 +351,16 @@ class L10nFr extends L10n {
   }
 
   @override
+  String get readerTitle => 'Lecture';
+
+  @override
+  String get readerActionRead => 'Lire';
+
+  @override
+  String get readerNoContent =>
+      'Aucun contenu disponible pour la lecture hors-ligne.';
+
+  @override
   String get commonCancel => 'Annuler';
 
   @override

@@ -243,6 +243,14 @@ class _ArticleList extends ConsumerWidget {
                 : null,
             onTap: () =>
                 service.setSelected([article.id], selected: !article.selected),
+            trailing:
+                article.contentHtml != null &&
+                    article.contentHtml!.trim().isNotEmpty
+                ? OutlinedButton(
+                    onPressed: () => context.push('/reader/${article.id}'),
+                    child: Text(L10n.of(context)!.readerActionRead),
+                  )
+                : null,
           ),
         );
       },

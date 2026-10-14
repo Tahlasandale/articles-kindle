@@ -1,6 +1,7 @@
 import 'package:articles_kindle/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../state/providers.dart';
@@ -79,21 +80,42 @@ class HistoryScreen extends ConsumerWidget {
                             title: article.title ?? article.url,
                             source: article.siteName ?? '',
                             status: ArticleStatusView.sent,
-                            trailing: OutlinedButton(
-                              onPressed: () async {
-                                await ref.read(articleServiceProvider).requeue([
-                                  article.id,
-                                ]);
-                                if (!context.mounted) return;
-                                ScaffoldMessenger.of(context)
-                                  ..hideCurrentSnackBar()
-                                  ..showSnackBar(
-                                    SnackBar(
-                                      content: Text(l10n.historyQueuedAgain),
-                                    ),
-                                  );
-                              },
-                              child: Text(l10n.historyQueuedAgainAction),
+                            onTap:
+                                article.contentHtml != null &&
+                                    article.contentHtml!.trim().isNotEmpty
+                                ? () => context.push('/reader/${article.id}')
+                                : null,
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (article.contentHtml != null &&
+                                    article.contentHtml!.trim().isNotEmpty) ...[
+                                  OutlinedButton(
+                                    onPressed: () =>
+                                        context.push('/reader/${article.id}'),
+                                    child: Text(l10n.readerActionRead),
+                                  ),
+                                  const SizedBox(width: Eink.space2),
+                                ],
+                                OutlinedButton(
+                                  onPressed: () async {
+                                    await ref
+                                        .read(articleServiceProvider)
+                                        .requeue([article.id]);
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context)
+                                      ..hideCurrentSnackBar()
+                                      ..showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            l10n.historyQueuedAgain,
+                                          ),
+                                        ),
+                                      );
+                                  },
+                                  child: Text(l10n.historyQueuedAgainAction),
+                                ),
+                              ],
                             ),
                           ),
                         ),

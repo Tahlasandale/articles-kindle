@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'theme/tokens.dart';
 import 'screens/history_screen.dart';
+import 'screens/reader_screen.dart';
 import 'screens/send_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/site_discovery_screen.dart';
@@ -56,6 +57,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/site',
         builder: (context, state) => const SiteDiscoveryScreen(),
+      ),
+      GoRoute(
+        path: '/reader/:id',
+        builder: (context, state) {
+          final id = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+          return ReaderScreen(articleId: id);
+        },
       ),
     ],
   );

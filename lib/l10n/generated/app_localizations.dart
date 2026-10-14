@@ -693,6 +693,24 @@ abstract class L10n {
   /// **'Le serveur SMTP a refusé le message : {error}'**
   String errorSmtpSend(String error);
 
+  /// No description provided for @readerTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lecture'**
+  String get readerTitle;
+
+  /// No description provided for @readerActionRead.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lire'**
+  String get readerActionRead;
+
+  /// No description provided for @readerNoContent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun contenu disponible pour la lecture hors-ligne.'**
+  String get readerNoContent;
+
   /// No description provided for @commonCancel.
   ///
   /// In fr, this message translates to:
