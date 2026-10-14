@@ -10,9 +10,15 @@ L'APK se construit avec :
 export PATH="$HOME/dev/flutter/bin:$PATH"
 export JAVA_HOME="$HOME/dev/jdk17"
 export ANDROID_HOME="$HOME/Android/Sdk"
-flutter build apk --debug
-# build/app/outputs/flutter-apk/app-debug.apk
+flutter build apk --debug      # build/app/outputs/flutter-apk/app-debug.apk
+flutter build apk --release    # build/app/outputs/flutter-apk/app-release.apk
 ```
+
+Choisissez le **debug** pour essayer tout de suite. Le release est plus léger
+(67 Mo contre 209 Mo, qui contient toutes les architectures et les symboles), mais
+il est signé avec le certificat de débogage : il s'installe, et c'est tout. Le Play
+Store le refusera, et le remplacer plus tard par une version signée avec votre
+clé imposera une désinstallation préalable.
 
 L'installer sans câble :
 

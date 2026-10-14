@@ -143,6 +143,15 @@ en français.
 
 ## Pas d'appareil Android pendant le développement
 
+- **Décision** : les APK sont construits et livrés signés avec le certificat de
+  débogage. Aucune configuration de signature n'est versionnée.
+- **Pourquoi** : cet APK est destiné à être installé sur le téléphone du
+  propriétaire, pas publié. Un keystor versionné dans un dépôt public est un
+  problème ; un keystor local jamais écrit est simplement inutilisable.
+- **Écart** : aucune publication possible en l'état. Le jour où la publication
+ -decide, il faut créer le keystor, le garder hors du dépôt, et configurer
+  `key.properties` (voir le documentation Flutter sur la signature Android).
+
 - **Décision** : la livraison de ce lot s'arrête à un APK debug compilé, accompagné
   d'une checklist de gestes à faire sur le téléphone. Aucun test d'intégration du
   partage.
@@ -162,3 +171,15 @@ en français.
   avertissement. Un jour, `flutter.compileSdkVersion` suffira de nouveau : c'est à
   vérifier à chaque montée de version du plugin, pas une configuration à respecter
   aveuglément.
+
+## Aucun keystore pour l'instant
+
+- **Décision** : les APK sont livrés signés avec le certificat de débogage. Aucune
+  configuration de signature n'est versionnée.
+- **Pourquoi** : cet APK est destiné au téléphone de son propriétaire, pas au Play
+  Store. Un keystor versionné dans un dépôt public est un problème ; un keystor
+  local jamais écrit est seulement inutilisable.
+- **Écart** : aucune publication en l'état. Le jour où la publication se décide, il
+  faut créer la clé, la garder hors du dépôt, et brancher `key.properties` sur la
+  signature Android de Gradle. Changer de clé impose ensuite une désinstallation
+  avant toute mise à jour.
