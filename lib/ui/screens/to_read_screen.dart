@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/article_service.dart';
 import '../../data/db/database.dart';
 import '../../data/db/tables.dart';
+import '../../data/ingest.dart';
 import '../../state/providers.dart';
 import '../theme/tokens.dart';
 import '../widgets/article_card.dart';
@@ -180,16 +180,22 @@ class _ToReadScreenState extends ConsumerState<ToReadScreen> {
     await _add(url);
   }
 
+  /// Ajouter un lien, c'est déjà l'extraire : l'article arrive « prêt », pas en
+  /// attente d'un travail que rien ne déclencherait.
   Future<void> _add(String url) async {
-    final service = ref.read(articleServiceProvider);
-    final result = await service.addUrl(url, origin: ArticleOrigin.manual);
+    final outcome = await ref
+        .read(ingestProvider)
+        .addAndExtract(url, origin: ArticleOrigin.manual);
     if (!mounted) return;
 
     final l10n = L10n.of(context)!;
-    final message = switch (result) {
-      ArticleAdded() => l10n.statusPending,
-      ArticleAlreadyKnown() => l10n.addUrlDuplicate,
-      ArticleInvalid() => l10n.addUrlInvalid,
+    final message = switch (outcome) {
+      IngestOutcome(isDuplicate: true) => l10n.addUrlDuplicate,
+      IngestOutcome(isReady: true) => l10n.statusReady,
+      IngestOutcome(status: final status) => switch (status) {
+        ArticleStatus.failed => outcome.reason ?? l10n.statusFailed,
+        _ => l10n.addUrlInvalid,
+      },
     };
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()

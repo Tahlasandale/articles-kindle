@@ -1,4 +1,12 @@
 import 'package:articles_kindle/data/article_service.dart';
+import 'package:articles_kindle/data/extraction/article_extraction_job.dart';
+import 'package:articles_kindle/data/extraction/extraction_service.dart';
+import 'package:articles_kindle/data/ingest.dart';
+import 'package:articles_kindle/data/mail/kindle_mailer.dart';
+import 'package:articles_kindle/data/mail/mail_transport.dart';
+import 'package:articles_kindle/data/mail/smtp_mail_transport.dart';
+import 'package:articles_kindle/data/net/article_fetcher.dart';
+import 'package:articles_kindle/data/secret_store.dart';
 import 'package:articles_kindle/data/db/database.dart';
 import 'package:articles_kindle/data/settings.dart';
 import 'package:flutter/material.dart';
@@ -69,4 +77,91 @@ final deliveriesProvider = StreamProvider<List<DeliveryRow>>(
 /// Ce qui part dans le prochain livre.
 final sendQueueProvider = FutureProvider<List<ArticleRow>>(
   (ref) => ref.watch(articleServiceProvider).sendQueue(),
+);
+
+/// Point d'entrée réseau unique pour toute l'application.
+final articleFetcherProvider = Provider<ArticleFetcher>(
+  (ref) => DioArticleFetcher(),
+);
+
+final extractionJobProvider = Provider<ArticleExtractionJob>(
+  (ref) => ArticleExtractionJob(
+    ref.watch(articleServiceProvider),
+    ExtractionService(ref.watch(articleFetcherProvider)),
+  ),
+);
+
+final ingestProvider = Provider<ArticleIngest>(
+  (ref) => ArticleIngest(
+    ref.watch(articleServiceProvider),
+    ref.watch(extractionJobProvider),
+  ),
+);
+
+final mailerProvider = Provider<KindleMailer>(
+  (ref) => KindleMailer(
+    transport: ref.watch(mailTransportProvider),
+    articles: ref.watch(articleServiceProvider),
+    secrets: ref.watch(secretStoreProvider),
+    settings: ref.watch(currentSettingsProvider),
+    bookTitle: ref.watch(currentSettingsProvider).bookTitle,
+  ),
+);
+
+/// Le transport réel. Les tests le remplacent par un faux ; l'application, lui,
+/// ne l'instancie jamais tant qu'aucun envoi n'est demandé.
+final mailTransportProvider = Provider<MailTransport>((ref) {
+  final settings = ref.watch(currentSettingsProvider);
+  return SmtpMailTransport(
+    host: settings.smtpHost,
+    port: settings.smtpPort,
+    username: settings.smtpUsername,
+    // Le mot de passe est relu du Keystore au dernier moment, au moment d'envoyer.
+    password: '',
+    useTls: settings.smtpUseTls,
+  );
+});
+
+/// Étapes affichées pendant un envoi, pour que l'utilisateur sache où on en est.
+enum SendStep { building, sending, done }
+
+class SendState {
+  const SendState({required this.step, this.outcome});
+
+  final SendStep step;
+  final SendOutcome? outcome;
+
+  bool get isBusy => step != SendStep.done;
+}
+
+/// Lance l'envoi et tient l'état de la progression.
+class SendController extends Notifier<SendState> {
+  @override
+  SendState build() => const SendState(step: SendStep.done);
+
+  Future<void> send() async {
+    state = const SendState(step: SendStep.building);
+
+    final book = await ref.read(mailerProvider).buildBook();
+    state = const SendState(step: SendStep.sending);
+
+    final outcome = await ref.read(mailerProvider).send();
+    state = SendState(step: SendStep.done, outcome: outcome);
+
+    if (book.chapters.isNotEmpty) {
+      ref.invalidate(sendQueueProvider);
+    }
+  }
+
+  Future<void> sendTest() async {
+    state = const SendState(step: SendStep.sending);
+    final outcome = await ref.read(mailerProvider).sendTest();
+    state = SendState(step: SendStep.done, outcome: outcome);
+  }
+
+  void reset() => state = const SendState(step: SendStep.done);
+}
+
+final sendControllerProvider = NotifierProvider<SendController, SendState>(
+  SendController.new,
 );

@@ -1,8 +1,6 @@
-import 'package:articles_kindle/data/article_service.dart';
 import 'package:articles_kindle/data/db/tables.dart';
 import 'package:articles_kindle/data/feeds/feed_parser.dart';
 import 'package:articles_kindle/data/feeds/site_discovery_service.dart';
-import 'package:articles_kindle/data/net/article_fetcher.dart';
 import 'package:articles_kindle/l10n/generated/app_localizations.dart';
 import 'package:articles_kindle/state/providers.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +12,6 @@ import '../theme/tokens.dart';
 /// on propose la liste, l'utilisateur coche.
 final siteDiscoveryProvider = Provider<SiteDiscoveryService>(
   (ref) => SiteDiscoveryService(ref.watch(articleFetcherProvider)),
-);
-
-final articleFetcherProvider = Provider<ArticleFetcher>(
-  (ref) => DioArticleFetcher(),
 );
 
 /// Résultat de la dernière recherche, gardé le temps de l'écran.
@@ -127,15 +121,21 @@ class _SiteDiscoveryScreenState extends ConsumerState<SiteDiscoveryScreen> {
   }
 
   Future<void> _addSelected(List<FeedItem> items) async {
-    final service = ref.read(articleServiceProvider);
     final chosen = items.where((i) => _checked.contains(i.url)).toList();
+
+    final outcomes = await ref.read(ingestProvider).addAll([
+      for (final item in chosen)
+        (
+          url: item.url,
+          contentFromFeed: item.hasFullContent ? item.content : null,
+        ),
+    ], origin: ArticleOrigin.site);
 
     var added = 0;
     var duplicates = 0;
-    for (final item in chosen) {
-      final result = await service.addUrl(item.url, origin: ArticleOrigin.site);
-      if (result is ArticleAdded) added++;
-      if (result is ArticleAlreadyKnown) duplicates++;
+    for (final outcome in outcomes) {
+      if (outcome.isReady) added++;
+      if (outcome.isDuplicate) duplicates++;
     }
 
     if (!mounted) return;
