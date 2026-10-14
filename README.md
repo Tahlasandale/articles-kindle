@@ -17,7 +17,7 @@ livre EPUB et l'envoie à votre liseuse **Kindle 7e génération** à votre adre
 
 ## Essayer tout de suite
 
-**[Version de test à télécharger](https://github.com/Tahlasandale/articles-kindle/releases/download/v0.1.0-test1/app-release.apk)**
+**[Version de test à télécharger](https://github.com/Tahlasandale/articles-kindle/releases/download/v0.1.0-test2/app-release.apk)**
 — 67 Mo, Android 7 et plus récents. Téléchargez le fichier avec le navigateur du
 téléphone, ouvrez-le, puis « Installer ». La recette complète est dans
 [`docs/CHECKLIST-APPAREIL.md`](docs/CHECKLIST-APPAREIL.md).
