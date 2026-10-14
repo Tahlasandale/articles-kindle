@@ -15,6 +15,13 @@ livre EPUB et l'envoie à votre liseuse **Kindle 7e génération** à votre adre
   concernés et l'EPUB part vers le serveur SMTP que vous configurez. Aucun service
   tiers, aucun compte, aucune télémétrie.
 
+## Essayer tout de suite
+
+**[Version de test à télécharger](https://github.com/Tahlasandale/articles-kindle/releases/download/v0.1.0-test1/app-release.apk)**
+— 67 Mo, Android 7 et plus récents. Téléchargez le fichier avec le navigateur du
+téléphone, ouvrez-le, puis « Installer ». La recette complète est dans
+[`docs/CHECKLIST-APPAREIL.md`](docs/CHECKLIST-APPAREIL.md).
+
 **Documentation** : la spec complète est dans [`docs/design-doc.md`](docs/design-doc.md),
 les écarts assumés et les choix de dépendance dans [`DECISIONS.md`](DECISIONS.md), les
 portes à passer dans [`AGENTS.md`](AGENTS.md), la recette de validation sur votre

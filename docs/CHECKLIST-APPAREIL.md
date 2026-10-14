@@ -4,7 +4,16 @@ Aucun appareil Android n'était branché pendant le développement : ce qui suit
 la recette à exécuter chez vous, dans l'ordre. Dix minutes pour la première
 fois, une par Test ensuite.
 
-L'APK se construit avec :
+## Le plus court chemin
+
+**Télécharger l'APK de test :**
+<https://github.com/Tahlasandale/articles-kindle/releases/download/v0.1.0-test1/app-release.apk>
+
+Ouvrez ce lien avec le navigateur **du téléphone**, autorisez « sources
+inconnues » pour ce navigateur, puis installez le fichier. Si vous préférez le
+bureau, `adb install -r` avec le fichier téléchargé.
+
+Reconstruire soi-même :
 
 ```bash
 export PATH="$HOME/dev/flutter/bin:$PATH"
@@ -14,11 +23,11 @@ flutter build apk --debug      # build/app/outputs/flutter-apk/app-debug.apk
 flutter build apk --release    # build/app/outputs/flutter-apk/app-release.apk
 ```
 
-Choisissez le **debug** pour essayer tout de suite. Le release est plus léger
-(67 Mo contre 209 Mo, qui contient toutes les architectures et les symboles), mais
-il est signé avec le certificat de débogage : il s'installe, et c'est tout. Le Play
-Store le refusera, et le remplacer plus tard par une version signée avec votre
-clé imposera une désinstallation préalable.
+Choisissez le **debug** si vous préfère reconstruire vous-même. Le release est
+plus léger (67 Mo contre 209 Mo, qui contient toutes les architectures et les
+symboles), mais il est lui aussi signé avec le certificat de débogage : il
+s'installe, et c'est tout. Le Play Store le refusera, et le remplacer plus tard
+par une version signée avec votre clé imposera une désinstallation préalable.
 
 L'installer sans câble :
 
