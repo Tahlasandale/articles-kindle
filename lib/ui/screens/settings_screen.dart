@@ -2,6 +2,7 @@ import 'package:articles_kindle/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/mail/kindle_mailer.dart';
 import '../../data/secret_store.dart';
 import '../../state/providers.dart';
 import '../theme/tokens.dart';
@@ -83,6 +84,7 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: Text(l10n.settingsSmtpTlsRequired),
             contentPadding: EdgeInsets.zero,
           ),
+          const _SmtpTestButton(),
           _Section(title: l10n.settingsEpubSection),
           SwitchListTile(
             value: settings.downloadImages,
@@ -258,6 +260,51 @@ class _PasswordFieldState extends ConsumerState<_PasswordField> {
                   },
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _SmtpTestButton extends ConsumerStatefulWidget {
+  const _SmtpTestButton();
+
+  @override
+  ConsumerState<_SmtpTestButton> createState() => _SmtpTestButtonState();
+}
+
+class _SmtpTestButtonState extends ConsumerState<_SmtpTestButton> {
+  bool _testing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
+    return Padding(
+      padding: const EdgeInsets.only(top: Eink.space2, bottom: Eink.space3),
+      child: OutlinedButton.icon(
+        onPressed: _testing
+            ? null
+            : () async {
+                setState(() => _testing = true);
+                final outcome = await ref.read(mailerProvider).sendTest();
+                if (!mounted) return;
+                setState(() => _testing = false);
+                final message = switch (outcome) {
+                  SendSucceeded() => l10n.sendTestSuccess,
+                  SendFailed(:final reason) => reason,
+                };
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(content: Text(message)));
+              },
+        icon: _testing
+            ? const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : const Icon(Icons.send_outlined),
+        label: Text(l10n.sendTestButton),
       ),
     );
   }

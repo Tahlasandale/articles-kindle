@@ -81,14 +81,30 @@ class SendScreen extends ConsumerWidget {
                 busy: sendState.isBusy,
                 step: sendState.step,
                 onSend: () => _send(context, ref, settings.sizeLimitMb),
-                onTest: () =>
-                    ref.read(sendControllerProvider.notifier).sendTest(),
+                onTest: () => _testSend(context, ref),
               ),
             ],
           );
         },
       ),
     );
+  }
+
+  Future<void> _testSend(BuildContext context, WidgetRef ref) async {
+    final l10n = L10n.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    await ref.read(sendControllerProvider.notifier).sendTest();
+    final outcome = ref.read(sendControllerProvider).outcome;
+    final message = switch (outcome) {
+      SendSucceeded() => l10n.sendTestSuccess,
+      SendFailed(:final reason) => reason,
+      null => null,
+    };
+    if (message == null || !context.mounted) return;
+
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   /// La taille est estimée avant tout envoi : Amazon refuse au-delà de 50 Mo, et

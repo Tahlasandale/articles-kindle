@@ -8,12 +8,15 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// Surcharge la base par une base en mémoire : aucun test de widget ne touche
 /// au fichier de l'appareil.
-ProviderContainer containerWithMemoryDatabase() {
+ProviderContainer containerWithMemoryDatabase({
+  List<dynamic> overrides = const [],
+}) {
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(
         AppDatabase.forTesting(NativeDatabase.memory()),
       ),
+      ...overrides.cast(),
     ],
   );
   addTearDown(container.dispose);
