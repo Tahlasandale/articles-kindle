@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>SmartRSS Subscriptions</title>
+    <dateCreated>2026-10-13T00:38:13.929985</dateCreated>
+  </head>
+  <body>
+    <outline text="Default" title="Default">
+      <outline text=" selfh.st " title=" selfh.st " xmlUrl="https://selfh.st/rss/" htmlUrl="https://selfh.st/rss/"/>
+      <outline text="BisonBlog" title="BisonBlog" xmlUrl="https://bison-blog-six.vercel.app/rss.xml" htmlUrl="https://bison-blog-six.vercel.app/rss.xml"/>
+      <outline text="Blog de dada" title="Blog de dada" xmlUrl="https://www.dadall.info/feed.php?rss" htmlUrl="https://www.dadall.info/feed.php?rss"/>
+      <outline text="BURGER RING" title="BURGER RING" xmlUrl="https://media.rss.com/burgerring/feed.xml" htmlUrl="https://media.rss.com/burgerring/feed.xml"/>
+      <outline text="Daily - Liens en vrac de sebsauvage" title="Daily - Liens en vrac de sebsauvage" xmlUrl="https://sebsauvage.net/links/?do=dailyrss" htmlUrl="https://sebsauvage.net/links/?do=dailyrss"/>
+      <outline text="DevSecOps Documentation" title="DevSecOps Documentation" xmlUrl="https://blog.stephane-robert.info/rss.xml" htmlUrl="https://blog.stephane-robert.info/rss.xml"/>
+      <outline text="Framablog" title="Framablog" xmlUrl="https://framablog.org/feed/" htmlUrl="https://framablog.org/feed/"/>
+      <outline text="Le mot de Jay" title="Le mot de Jay" xmlUrl="https://www.lemotdejay.fr/feed/" htmlUrl="https://www.lemotdejay.fr/feed/"/>
+      <outline text="Les news de Korben" title="Les news de Korben" xmlUrl="https://korben.info/feed/" htmlUrl="https://korben.info/feed/"/>
+      <outline text="Loïs Dutour" title="Loïs Dutour" xmlUrl="https://ldtr.ovh/index.xml" htmlUrl="https://ldtr.ovh/index.xml"/>
+      <outline text="Pôle open source et communs numériques" title="Pôle open source et communs numériques" xmlUrl="https://code.gouv.fr/feed/feed.xml" htmlUrl="https://code.gouv.fr/feed/feed.xml"/>
+      <outline text="Sans dépendances" title="Sans dépendances" xmlUrl="https://sansdependances.fr/rss.xml" htmlUrl="https://sansdependances.fr/rss.xml"/>
+      <outline text="StackGuide's Blog" title="StackGuide's Blog" xmlUrl="https://www.stackgui.de/rss.xml" htmlUrl="https://www.stackgui.de/rss.xml"/>
+      <outline text="Underscore_" title="Underscore_" xmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCWedHS9qKebauVIK2J7383g" htmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCWedHS9qKebauVIK2J7383g"/>
+    </outline>
+    <outline text="kto" title="kto">
+      <outline text="CatéGPT — Le saint du jour (Vetus Ordo Missae)" title="CatéGPT — Le saint du jour (Vetus Ordo Missae)" xmlUrl="https://categpt.chat/api/feed/feast-of-the-day?ordo=vom" htmlUrl="https://categpt.chat/api/feed/feast-of-the-day?ordo=vom"/>
+      <outline text="PER IPSUM" title="PER IPSUM" xmlUrl="https://rss.evangelizo.org/rss/v2/evangelizo_rss-trf.xml" htmlUrl="https://rss.evangelizo.org/rss/v2/evangelizo_rss-trf.xml"/>
+    </outline>
+  </body>
+</opml>
