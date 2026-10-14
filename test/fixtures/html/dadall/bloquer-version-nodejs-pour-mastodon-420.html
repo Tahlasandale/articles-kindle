@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<!-- <link rel="shortcut icon" href="https://www.dadall.info/themes/skya-1/favicon.png" /> -->
+
+
+
+<head>
+
+<meta name="google-site-verification" content="w69eTNzq69GOOZSLD7YZC-vU7pqDgY3CF5uoGRNmZvU"/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
+<title>Bloquer la version de NodeJS pour Mastodon 4.2.0 - Blog de dada</title>
+	<meta name="author" content="dada"/>
+
+
+        
+
+        
+        
+
+
+
+
+
+
+	<link rel="stylesheet" type="text/css" href="https://www.dadall.info/data/site.css?d=1z0s4" media="screen"/>
+<link rel="alternate" type="application/rss+xml" title="Fil Rss des articles" href="https://www.dadall.info/feed.php?rss"/>
+<link rel="alternate" type="application/rss+xml" title="Fil Rss des commentaires" href="https://www.dadall.info/feed.php?rss/commentaires"/>
+
+</head>
+
+<body id="top" class="article">
+
+	<header role="banner">
+		<h1>
+			<a class="maintitle" href="https://www.dadall.info/" title="Blog de dada">Blog de dada</a> 
+		</h1>
+
+		<h2>
+			DevOps, bidouilleur et routard plein de logiciels libres		</h2>
+	</header>
+
+	<nav role="navigation">
+		<ul id="static-nav">
+			
+<li id="static-home"><a href="https://www.dadall.info/" class="noactive" title="Accueil">Accueil</a></li>
+<li><a class="static noactive" href="https://www.dadall.info/index.php?search" title="Rechercher">Rechercher</a></li>
+<li id="static-8"><a href="https://www.dadall.info/index.php?static8/fediverse" class="noactive" title="Fédiverse ?">Fédiverse ?</a></li>
+<li id="static-4"><a href="https://www.dadall.info/index.php?static4/apropos" class="noactive" title="A propos">A propos</a></li>
+					</ul>
+	</nav>
+<section class="main">
+
+	<div id="container">
+
+		<div class="width-sidebar">
+
+			<article role="article" id="post-770">
+
+				<header>
+
+			
+<p style=" background-color: #ffe17a; text-align:center; vertical-align:middle; color: black; padding:5px;border-radius: 2px;box-shadow;color: #404040; "> Attention, ce billet se traine depuis plus de 3 mois.
+ Les informations qu'il contient ne sont peut-être plus à jour. </p> <br/>
+						<h1>
+	
+						Bloquer la version de NodeJS pour Mastodon 4.2.0
+					</h1>
+					<p>
+					<!--	Rédigé par dada /
+						28 septembre 2023 /
+						Aucun commentaire					 -->
+
+						Rédigé par <span class="author">dada</span> /
+						<time datetime="2023-09-28T11:00">28 septembre 2023</time> /
+						<span class="comments-nb">Aucun commentaire</span>
+
+
+					</p>
+				</header>
+
+				<section>
+
+
+					
+<div><br/></div><div>La toute dernière version de Mastodon s'accompagne d'un petit souci d'administration si vous utilisez Debian 12 (Bookworm) comme système d'exploitation pour votre serveur : NodeJS.</div><div><br/></div><div>En effet, la version de NodeJS officiellement supportée est, malgré ce que dit la documentation, la 16.x et pas plus alors que Debian 12 embarque la version 18 dans ses valises. Pas de 18, pas de 20, donc. Enfin, pas exactement. Il est possible de les utiliser au prix d'une bidouille officiellement diffusée dans les réponses aux différents soucis relayés dans <a href="https://github.com/mastodon/mastodon/issues/26541#issuecomment-1683978219" title="Github">Github</a>. <br/></div><div><br/></div><div>Enfin, si comme moi, vous n'avez pas envie de vous embêter plus que ça, voici comment faire pour être tranquille.</div><div><br/></div><div><h3>Installer le dépôt NodeJS 16 pour Debian 12</h3></div><div>On commence par les keys :</div><div><br/></div><div><pre>sudo apt-get update<br/>sudo apt-get install -y ca-certificates curl gnupg<br/>sudo mkdir -p /etc/apt/keyrings<br/>curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg</pre></div><div><br/></div><div>On ajout le dépôt : <br/></div><div><br/></div><div><pre>sudo echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_16.x bookworm main<br/>deb-src [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_16.x bookworm main" > /etc/apt/sources.list.d/nodesource.list</pre></div><div><br/></div><div>On fait le pinning qui va bien : <br/></div><div><br/></div><div>Dans <i>/etc/apt/preferences.d/nodejs-mastodon</i> ajoutez : <br/></div><div><br/></div><div><pre>Package: nodejs*<br/>Pin: release o=Debian*<br/>Pin-Priority: -1<br/><br/>Package: *<br/>Pin: release o=deb.nodesource.com<br/>Pin-Priority: 99</pre></div><div><br/></div><div>Vous pouvez maintenant supprimer la version NodeJS de Debian et installer la version des dépôts que vous venez d'ajouter : <br/></div><div><pre>apt update<br/>apt purge nodejs<br/>apt install apt install nodejs=16.20.2-deb-1nodesource1</pre></div><div><br/></div><div>Un apt-cache pour vérifier tout ça : <br/></div><div><br/></div><div><pre>nodejs:<br/>  Installed: 16.20.2-deb-1nodesource1<br/>  Candidate: 16.20.2-deb-1nodesource1<br/>  Version table:<br/>     18.13.0+dfsg1-1 -1<br/>        500 http://deb.debian.org/debian bookworm/main amd64 Packages<br/>        150 http://deb.debian.org/debian unstable/main amd64 Packages<br/> *** 16.20.2-deb-1nodesource1 500<br/>        500 https://deb.nodesource.com/node_16.x bookworm/main amd64 Packages<br/>        100 /var/lib/dpkg/status</pre></div><div><br/></div><div>Vous êtes tranquille maintenant ! Du moins, tant que NodeJS 14 est maintenu, ce qui commence à <a href="https://nodejs.dev/fr/about/releases/" title="devenir un souci">devenir un souci</a>.</div><div><br/></div>
+				</section>
+
+				<footer>
+					<p>
+						Classé dans : <a class="noactive" href="https://www.dadall.info/index.php?categorie6/technologie" title="Technologie">Technologie</a>, <a class="noactive" href="https://www.dadall.info/index.php?categorie8/aide" title="Aide">Aide</a> /
+						Mots clés : <a class="noactive" href="https://www.dadall.info/index.php?tag/debian" title="Debian">Debian</a>, <a class="noactive" href="https://www.dadall.info/index.php?tag/diaspodon" title="diaspodon">diaspodon</a>, <a class="noactive" href="https://www.dadall.info/index.php?tag/mastodon" title="Mastodon">Mastodon</a>					</p>
+				</footer>
+
+
+			</article>
+
+		<!--	  -->
+
+
+			
+	
+	
+	<p>
+		Les commentaires sont fermés.
+	</p>
+
+	
+		</div>
+
+		
+
+	<aside role="complementary">
+
+
+<!--		<h3>
+			J'aime beaucoup :
+		</h3>
+<center>
+
+<a href="https://lesjours.fr/" title="Les Jours ont inventé un nouveau journalisme : raconter l’actualité à la façon de séries. Attention, pas de fiction ici ! Tous les personnages de ces histoires sont vrais. C’est vous, c’est nous. C’est notre monde. "><img src="https://www.dadall.info/data/medias/lesjours.png" alt="« Les Jours », média indépendant et sans pub" /></a>
+</center>
+<br />
+-->
+		<h3>
+			Connectons-nous
+		</h3>
+
+		<ul>
+                       <center>
+                        <a href="https://github.com/dadall"> <img src="https://www.dadall.info/data/images/logo/github-mark-32px.png" alt="Github"/>
+                        <a rel="me" href="https://diaspodon.fr/@dada"> <img src="https://www.dadall.info/data/images/logo/mastodon_icon.png" alt="Mastodon"/>
+                        <a rel="me" href="https://gitlab.com/dadainfo"> <img src="https://www.dadall.info/data/images/logo/gitlab_icon.png" alt="Gitlab"/>
+                        <a rel="me" href="https://diaspodon.fr/@dada"></a>
+                        <a href="https://pix.diaspodon.fr/dada"> <img src="https://www.dadall.info/data/images/logo/pixelfed-icon-color.png" alt="Pixelfed"/> </p>
+                        <a href="https://liberapay.com/dada/"> <img src="https://img.shields.io/liberapay/goal/dada.svg?logo=liberapay"/>
+  		       </center>
+                </ul>
+
+		<h3>
+			Derniers articles		</h3>
+
+		<ul>
+			<li><a class="noactive" href="https://www.dadall.info/index.php?article769/velo-sigma-blaze-et-impression-3d" title="Vélo, Sigma Blaze et Impression 3D">Vélo, Sigma Blaze et Impression 3D</a></li><li><a class="active" href="https://www.dadall.info/index.php?article770/bloquer-la-version-de-nodejs-pour-mastodon-420" title="Bloquer la version de NodeJS pour Mastodon 4.2.0">Bloquer la version de NodeJS pour Mastodon 4.2.0</a></li><li><a class="noactive" href="https://www.dadall.info/index.php?article768/jai-recupere-un-pinephone" title="J'ai récupéré un PinePhone">J'ai récupéré un PinePhone</a></li><li><a class="noactive" href="https://www.dadall.info/index.php?article767/twitter-va-bien-merci" title="Twitter va bien, merci">Twitter va bien, merci</a></li><li><a class="noactive" href="https://www.dadall.info/index.php?article766/brancher-un-capteur-co2-ampel-a-home-assistant" title="Brancher un capteur CO2 Ampel à Home Assistant">Brancher un capteur CO2 Ampel à Home Assistant</a></li>		</ul>
+
+		<h3>
+			Derniers commentaires		</h3>
+
+		<ul>
+			<li><a href="https://www.dadall.info/index.php?article766/brancher-un-capteur-co2-ampel-a-home-assistant#c0766-8">yoko san a dit : Bonjour, 
+Une autre possibilité ...</a></li><li><a href="https://www.dadall.info/index.php?article767/twitter-va-bien-merci#c0767-7">dada a dit : C'est corrigé, merci !</a></li><li><a href="https://www.dadall.info/index.php?article768/jai-recupere-un-pinephone#c0768-4">André a dit : non je ne rigole pas de ceux qui o...</a></li><li><a href="https://www.dadall.info/index.php?article761/pinetime-jai-craque-pour-une-montre-connectee#c0761-19">Manue44 a dit : Bonjour, je cherche pour mon fils ...</a></li><li><a href="https://www.dadall.info/index.php?article768/jai-recupere-un-pinephone#c0768-2">Floc a dit : Je rejoins votre avis. 
+
+Pour ma...</a></li>		</ul>
+
+		<h3>
+			Catégories		</h3>
+
+		<ul>
+			<li id="cat-2"><a class="noactive" href="https://www.dadall.info/index.php?categorie2/politique-libre" title="Politique libre">Politique libre</a> (32)</li><li id="cat-3"><a class="noactive" href="https://www.dadall.info/index.php?categorie3/medias" title="Médias">Médias</a> (74)</li><li id="cat-4"><a class="noactive" href="https://www.dadall.info/index.php?categorie4/mobile" title="Mobile">Mobile</a> (59)</li><li id="cat-5"><a class="noactive" href="https://www.dadall.info/index.php?categorie5/cloud" title="Cloud">Cloud</a> (93)</li><li id="cat-6"><a class="active" href="https://www.dadall.info/index.php?categorie6/technologie" title="Technologie">Technologie</a> (160)</li><li id="cat-7"><a class="noactive" href="https://www.dadall.info/index.php?categorie7/b2d" title="B2D">B2D</a> (10)</li><li id="cat-8"><a class="active" href="https://www.dadall.info/index.php?categorie8/aide" title="Aide">Aide</a> (67)</li><li id="cat-9"><a class="noactive" href="https://www.dadall.info/index.php?categorie9/gaming" title="Gaming">Gaming</a> (11)</li><li id="cat-10"><a class="noactive" href="https://www.dadall.info/index.php?categorie10/edito" title="Édito">Édito</a> (58)</li><li id="cat-11"><a class="noactive" href="https://www.dadall.info/index.php?categorie11/invite" title="Invité">Invité</a> (1)</li><li id="cat-12"><a class="noactive" href="https://www.dadall.info/index.php?categorie12/cinema" title="Cinéma">Cinéma</a> (4)</li><li id="cat-13"><a class="noactive" href="https://www.dadall.info/index.php?categorie13/add" title="ADD">ADD</a> (8)</li><li id="cat-14"><a class="noactive" href="https://www.dadall.info/index.php?categorie14/musique" title="Musique">Musique</a> (3)</li><li id="cat-15"><a class="noactive" href="https://www.dadall.info/index.php?categorie15/litterature" title="Littérature">Littérature</a> (3)</li><li id="cat-16"><a class="noactive" href="https://www.dadall.info/index.php?categorie16/impression3d" title="Impression 3D">Impression 3D</a> (1)</li>		</ul>
+
+
+

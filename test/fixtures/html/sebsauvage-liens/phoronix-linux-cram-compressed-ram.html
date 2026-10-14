@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+
+
+
+
+
+<!-- ASHIELD TAG -->
+
+
+
+		<title>Meta Developing Compressed RAM "CRAM" For Linux: Better Than ZRAM &amp; Zswap - Phoronix</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<link rel="stylesheet" href="/phxcms-css/phoronix-10.css?2025"/>
+				<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="keywords" content="Phoronix, Linux Hardware Reviews, Linux hardware benchmarks, Linux server benchmarks, Linux benchmarking, Desktop Linux, Linux performance, Open Source graphics, Linux How To, Ubuntu benchmarks, Ubuntu hardware, Phoronix Test Suite"/>
+		<meta name="Description" content="With today's memory shortages, high prices, and ever increasing memory capacity needs, Meta engineers have been working on Compressed RAM 'CRAM' for Linux"/>
+		<link rel="alternate" type="application/rss+xml" title="Phoronix" href="/rss.php"/>
+		<link rel="shortcut icon" href="/favicon.ico"/>
+		<link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png"/>
+		<link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png"/>
+		<link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png"/>
+		<link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png"/>
+		<link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png"/>
+		<link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png"/>
+		<link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png"/>
+		<link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png"/>
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png"/>
+		<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32"/>
+		<link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192"/>
+		<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"/>
+		<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16"/>
+		<meta name="msapplication-TileImage" content="/mstile-144x144.png"/>
+		<meta name="twitter:card" content="summary_large_image"/>
+		<meta name="twitter:site" content="@phoronix"/>
+		<meta name="twitter:creator" content="@michaellarabel"/>
+		<meta name="twitter:title" content="Meta Developing Compressed RAM &quot;CRAM&quot; For Linux: Better Than ZRAM &amp; Zswap"/>
+		<meta name="og:title" content="Meta Developing Compressed RAM &quot;CRAM&quot; For Linux: Better Than ZRAM &amp; Zswap"/>
+		<meta name="twitter:image" content="https://www.phoronix.net/image.php?id=2026&amp;image=cram_2"/>
+		<meta name="og:image" content="https://www.phoronix.net/image.php?id=2026&amp;image=cram_2"/>
+		<meta name="twitter:description" content="With today's memory shortages, high prices, and ever increasing memory capacity needs, Meta engineers have been working on Compressed RAM 'CRAM' for Linux"/>
+		<!-- PHORONIX (phoronix.com) -->
+    		
+	</head>
+	<body style="overflow: initial !important;">
+		<div style="text-align: center; overflow: hidden; background: #222;"><div align="center" id="phoronix_desktop_leaderboard_header">
+  
+</div>
+</div>		<div id="headerwrap">
+			<div class="wcontainer defpadding">
+				<a href="/"><img id="logo" alt="Phoronix" src="/phxcms7-css/phoronix.png" style="height: 40px; margin-top: 5px;margin-left: 5px;"/></a>
+				<div id="headerright">
+					<div id="social">
+					    <a href="https://www.phoronix.com/rss.php" alt="Phoronix on RSS" class="icon-rss"></a>
+					    <a href="https://x.com/Phoronix" rel="me" alt="Phoronx on Twitter / X" class="icon-twitter"></a>
+					    <a href="https://www.facebook.com/Phoronix" alt="Phoronix on Facebook" rel="me" class="icon-facebook"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="litemenu">
+		    <ul>
+		        <li><a href="/reviews">Articles &amp; Reviews</a></li>
+		        <li><a href="/news">News Archive</a></li>
+		        <li><a href="/forums/">Forums</a></li>
+		        <li><a href="/phoronix-premium">Premium Ad-Free</a></li>		  	<li><a href="/contact">Contact</a></li>
+		        <li class="categ icon-angle-circled-down" style="display: none;"><span> Popular Categories</span></li>
+		        				<li id="closelid" onclick="javascript:document.getElementById('litemenu').style.zIndex=-9;">Close</li>
+		    </ul>		    
+		</div>
+		<div id="menuwrap">
+			<div class="wcontainer">
+				<ul id="linklist">
+					<li id="menubutton"><span class="icon-menu" onclick="javascript:document.getElementById('litemenu').style.zIndex=99;"></span>
+					</li>
+					<li class="menulink">
+						<a class="linknode" href="/reviews">Articles &amp; Reviews</a>
+					</li>
+					<li class="menulink">
+						<a class="linknode" href="/news">News Archive</a>
+					</li>
+					<li class="menulink">
+						<a class="linknode" href="/forums/">Forums</a>
+					</li>
+					<li class="menulink">
+						<a class="linknode" href="/phoronix-premium">Premium</a>
+					</li>					<li class="menulink">
+						<a class="linknode" href="/contact">Contact</a>
+					</li>
+					<li id="categories-link" class="menulink">
+						<span class="menunolink icon-angle-circled-down"> Categories</span>
+						<div id="categories-list">
+							<div id="categories-content">
+		         <a href="/reviews/Computers">Computers</a> <a href="/reviews/Display+Drivers">Display Drivers</a> <a href="/reviews/Graphics+Cards">Graphics Cards</a> <a href="/reviews/Linux+Gaming">Linux Gaming</a> <a href="/reviews/Memory">Memory</a> <a href="/reviews/Motherboards">Motherboards</a> <a href="/reviews/Processors">Processors</a> <a href="/reviews/Software">Software</a> <a href="/reviews/Storage">Storage</a> <a href="/reviews/Operating+Systems">Operating Systems</a> <a href="/reviews/Peripherals">Peripherals</a>							</div>
+						</div>
+					</li>
+					<li id="searchbox">
+						<div id="search">
+							<form action="https://www.google.com" id="cse-search-box" target="_blank">
+							  <div>
+							    <input type="hidden" name="cx" value="partner-pub-0253814508491313:1305299758"/>
+							    <input type="hidden" name="ie" value="UTF-8"/>
+							    <input type="text" name="q"/>
+							    <input type="submit" name="sa" value="Search"/>
+							  </div>
+							</form>
+
+							
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div id="content-bg">
+			<div id="content">
+				<div id="main-wrap">
+					<div id="main">
+						<div style="text-align: center; overflow: hidden; margin-bottom: 30px;">
+							<div align="center" id="phoronix_desktop_leaderboard_atf">
+  
+</div>
+
+						</div>
+												<!-- google_ad_section_start -->
+<article class="full">
+<h1>Meta Developing Compressed RAM "CRAM" For Linux: Better Than ZRAM &amp; Zswap</h1>
+<div class="author">Written by <a href="https://www.michaellarabel.com/">Michael Larabel</a> in <a href="/linux/Linux+Kernel">Linux Kernel</a> on 6 October 2026 at 06:23 AM EDT. <a href="/forums/node/1662006">32 Comments</a></div>
+<div class="content">
+<div style="float: left; padding: 0 10px 10px;"><img alt="LINUX KERNEL" src="/assets/categories/linuxkernel.webp" width="100" height="100"/></div>
+With today's memory shortages, high prices, and ever increasing memory capacity needs, Meta engineers have been working on Compressed RAM "CRAM" for Linux. This hardware-offloaded compression still allows cacheline/byte access to compressed memory and in turn a better implementation than the likes of ZRAM and Zswap. Very promising is that there is near-native performance to raw DRAM speeds with CRAM.<br/><br/>Gregory Price of Meta presented yesterday at the Linux Plumbers Conference in Prague on Compressed RAM for Linux. Most of the individual pieces needed to support CRAM are already mainline. For end-users that may already be relying on the likes of Zswap or ZRAM, CRAM is offering near-native DRAM speeds.<br/><p align="center"><img src="//www.phoronix.net/image.php?id=2026&amp;image=cram_1_med" alt="CRAM read performance"/></p><br/>Read-only data is shown to be as fast as the raw DRAM performance.<br/><p align="center"><img src="//www.phoronix.net/image.php?id=2026&amp;image=cram_2_med" alt="CRAM wrote performance"/></p><br/>And for memory writes, CRAM is much faster than ZRAM or Zswap or plain swap.<br/><p align="center"><img src="//www.phoronix.net/image.php?id=2026&amp;image=cram_3_med" alt="Compressed RAM"/></p><br/>Very impressive results for CRAM especially given the significant need today for maximizing Linux memory capacity. We'll see where this work leads and hopefully will all be upstreamed in the not too distant future.<br/><br/>Those wishing to learn more about Compressed RAM from LPC 2026 can see the session information <a href="https://lpc.events/event/20/contributions/2424/">here</a>.</div>
+							<div style="text-align: center; overflow: hidden; margin-bottom: 30px;">
+								<div align="center" id="phoronix_leaderboard_btf">
+  
+</div>
+							</div>
+							<div class="foot">
+								<div class="pagination">
+								</div>
+								<div class="comments-label">
+									<a href="/forums/node/1662006">32 Comments</a>								</div>
+							</div>
+						</article>
+<div id="sharebar">
+<div style="margin: 0 10px 10px; overflow: hidden;">
+
+<div style="float: left; overflow: hidden;"><a href="https://twitter.com/share" class="twitter-share-button" data-text="Meta Developing Compressed RAM &quot;CRAM&quot; For Linux: Better Than ZRAM &amp; Zswap" data-url="https://www.phoronix.com/news/Linux-CRAM-Compressed-RAM" data-via="phoronix" data-related="michaellarabel">Tweet</a>
+</div>
+
+<div style="float: left; overflow: hidden;"></div>
+</div></div>
+<div class="article-box">
+								<header>Related News</header>
+								<div class="node"><a href="/news/Linux-Dropping-Assisted-By-Req">Linux Kernel Developers Plan To Remove "Assisted-By" Tag Requirement For AI/LLM Usage</a></div><div class="node"><a href="/news/Linus-Torvalds-Assoc-Array">Linus Torvalds "Did What I Preach", Used AI To Make Code Decipherable &amp; Uncovered More Bugs</a></div><div class="node"><a href="/news/Linux-7.3-rc7-Released">Linux 7.3-rc7 Released With Linux 7.3 Hopefully Out Next Weekend</a></div><div class="node"><a href="/news/Linus-Torvalds-Claude-Code">Linus Torvalds Working On A Hefty Linux Kernel Improvement With Claude Code</a></div><div class="node"><a href="/news/Linux-7.4-Laptops-Handhelds">Many Laptop &amp; Gaming Handheld Support Improvements Coming For Linux 7.4</a></div><div class="node"><a href="/news/Linux-Hibernation-With-Lockdown">Linux Patches Finally Make Hibernation Possible In Secure Boot / Lockdown Mode</a></div>
+	                             
+							</div>						<div class="after-article">
+							<div style="text-align: center; overflow: hidden; margin: 5px;">
+								<div align="center" id="phoronix_leaderboard_incontent_3">
+  
+</div>
+</div>
+							<div id="about-author">
+								<header>About The Author</header>
+																<div class="text"><p>Michael Larabel is the principal author of Phoronix.com and founded the site in 2004 with a focus on enriching the Linux hardware experience. Michael has written more than 20,000 articles covering the state of Linux hardware support, Linux performance, graphics drivers, and other topics. Michael is also the lead developer of the Phoronix Test Suite, Phoromatic, and OpenBenchmarking.org automated benchmarking software. He can be followed via <a href="https://twitter.com/MichaelLarabel">Twitter</a>, <a href="https://www.linkedin.com/in/michaellarabel/">LinkedIn</a>, or contacted via <a href="https://www.michaellarabel.com/">MichaelLarabel.com</a>.</p></div>
+							</div>
+<div class="article-box">
+								<header>Popular News This Week</header>
+								<div class="node"><a href="/news/Linus-Torvalds-Claude-Code">Linus Torvalds Working On A Hefty Linux Kernel Improvement With Claude Code</a></div><div class="node"><a href="/news/Linus-Torvalds-Assoc-Array">Linus Torvalds "Did What I Preach", Used AI To Make Code Decipherable &amp; Uncovered More Bugs</a></div><div class="node"><a href="/news/Linux-CRAM-Compressed-RAM">Meta Developing Compressed RAM "CRAM" For Linux: Better Than ZRAM &amp; Zswap</a></div><div class="node"><a href="/news/Photocraft-Filmcraft-AI">AI Makes "Open-Source, Clean Room" Implementations Of Adobe Photoshop &amp; Premier In Rust</a></div><div class="node"><a href="/news/Linux-ZRAM-Rework-Savings">Linux's ZRAM Reworked For Greater Memory Savings, Better Performance</a></div><div class="node"><a href="/news/Steam-Beta-Use-Proton-Default">Steam Beta Now Defaults Non-Steam Windows Binaries To Using Proton</a></div><div class="node"><a href="/news/Ubuntu-DDoS-October-2026">Ubuntu Currently Suffering From Sustained DDoS Attack</a></div><div class="node"><a href="/news/X.Org-12-New-Issues-2026">Another Dozen Vulnerabilities Found In The X.Org Server &amp; XWayland</a></div>
+							</div>		</div>
+<!-- google_ad_section_end -->
+					</div>
+				</div>
+				<div id="sidebar-wrap">
+					<div id="sidebar">
+					    <aside>
+						<div style="text-align: center;">
+                           				<div align="center" id="phoronix_right_rail_1">
+  
+</div>
+                        </div>
+                        </aside>
+                        <aside class="widget">
+			<header>Latest Linux News</header><div class="popular-list">
+                                <a href="/news/Cloud-Hypervisor-54">Cloud Hypervisor 54 Released With Live Migration Improvements</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/news/Rustls-0.23.46-Released">Rustls 0.23.46 Released With Four Security Fixes</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/news/KDE-Plasma-6.8-Released">KDE Plasma 6.8 Released, Marks 30 Years Of The KDE Project</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/news/Mesa-Torx-YOLOX-PyTorch">Mesa Expands NPU Capabilities With Support For YOLOX With PyTorch</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/news/Intel-ISPC-1.32-Released">Intel ISPC 1.32 Released With AVX10.2 &amp; APX Support, Even AMD Zen 6 Too</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/news/Linux-Dropping-Assisted-By-Req">Linux Kernel Developers Plan To Remove "Assisted-By" Tag Requirement For AI/LLM Usage</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/news/Firefox-159-Beta">Firefox 159 Beta Released With Fix For Tabs On Wayland</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/news/Linux-Mint-27-Many-Features">Linux Mint 27 Continues Working Toward Christmas Release With Many Features</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/news/ONLYOFFICE-10.0">ONLYOFFICE 10.0 Released With AI Features, 1,000+ Bug Fixes</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/news/NVIDIA-Nova-Linux-7.4-Changes">NVIDIA's Nova Driver Continues Leading The Way For Linux Rust GPU Drivers</a>
+                            </div>
+                        </aside>
+			<aside>
+			<div style="text-align: center;">
+                          <div align="center" id="phoronix_right_rail_2">
+  
+</div>
+
+                        </div>
+                        </aside>
+			                        <aside class="widget">
+                       <header>Show Your Support, Go Premium</header>
+                       <p><a href="/phoronix-premium">Phoronix Premium</a> allows ad-free access to the site, multi-page articles on a single page, and other features while supporting this site's continued operations.</p>
+                        </aside>
+			                        <aside class="widget">
+			<header>Latest Featured Articles</header><div class="popular-list">
+                                <a href="/review/framework-laptop-12-wildcat-lake">Framework Laptop 12 Offers Improved Performance &amp; Efficiency With Intel Core 3 Wildcat Lake</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/review/rocm-10-opencl-rusticl">ROCm 10 OpenCL vs. Mesa 26.3-dev Rusticl Performance On AMD Strix Halo</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/review/amd-perfopt-prior-gen">AMD PerfOpt Boosting Prior-Gen Ryzen APU Performance For AI</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/review/ubuntu-2610-amd-epyc">Ubuntu 26.10 Delivers Nice I/O Performance Wins Over Ubuntu 26.04 On AMD EPYC</a>
+                            </div>
+<div class="popular-list">
+                                <a href="/review/star-labs-starfighter">Star Labs StarFighter Ultra: A Modern High-End Linux Laptop With Coreboot</a>
+                            </div>
+                        </aside>
+			<aside>
+						<div style="text-align: center;">
+                           				                       				 </div>
+                        </aside>
+                                                <aside class="widget">
+                            <header>Support Phoronix</header>
+                            <p>The mission at Phoronix since 2004 has centered around enriching the Linux hardware experience. In addition to supporting our site through advertisements, you can help by <a href="/phoronix-premium">subscribing to Phoronix Premium</a>. You can also contribute to Phoronix through tips/donations via <a href="https://www.paypal.com/donate/?hosted_button_id=EA79CCDLNFJNW">PayPal</a> or <a href="https://buy.stripe.com/28o02d1yG1Lp8H67ss">Stripe</a>.</p>
+                        </aside>
+                        					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer">
+		    <div id="footer-content">
+			<p align="center"></p>
+		        <div id="footer-left">
+		        <div id="footer-left-content">
+		            <div class="extra-info">
+		                <header>Phoronix Media</header>
+		                <hr/>
+		                <ul>
+		                    <li><a href="/contact">Contact</a></li>
+		                    <li><a href="/michaellarabel">Michael Larabel</a></li>
+		                </ul>
+		            </div>
+		            <div class="extra-info">
+		                <header>Phoronix Premium</header>
+		                <hr/>
+		                <a href="/phoronix-premium"><ul>
+                            <li>Support Phoronix</li>
+		                    <li>While Having Ad-Free Browsing,</li>
+                            <li>Single-Page Article Viewing</li>
+                        </ul></a>
+		            </div>
+		            <div class="extra-info">
+		                <header>Share</header>
+		                <hr/>
+		                <ul>
+		                    <li><a href="https://facebook.com/Phoronix" rel="me">Facebook</a></li>
+		                    <li><a href="https://x.com/Phoronix" rel="me">Twitter / X</a></li>
+		                </ul>
+		            </div>
+		       </div>
+		       </div>
+		       <div id="footer-right">
+		            <div class="extra-info">
+		                <ul>
+		                <li><p><a href="/legal">Legal Disclaimer, Privacy Policy, Cookies</a> | <button id="pmLink">Privacy Manager</button> | <a href="https://www.phoronix-media.com/?k=contact">Contact</a></p></li>
+                        <li><p>Copyright © 2004 - 2026 by <a href="https://www.phoronix-media.com/">Phoronix Media</a>.</p></li>
+                        <li><p>All trademarks used are properties of their respective owners. All rights reserved.</p></li>
+				</ul>
+		            </div>
+		        </div>
+		     </div>		   
+		</div>
+	</body>
+</html>
