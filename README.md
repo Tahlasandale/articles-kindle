@@ -35,6 +35,19 @@ Chaque jalon est commité et tagué :
 Reste à faire : la recette de [`docs/CHECKLIST-APPAREIL.md`](docs/CHECKLIST-APPAREIL.md),
 sur votre téléphone.
 
+## État vérifié à la livraison
+
+- `flutter analyze` : aucun problème, aucune info.
+- `flutter test` : **159 tests**, dont 33 fixtures HTML réelles balayées.
+- `tool/epubcheck.sh` : epubcheck 5.4.0 valide les EPUB générés (1, 12 chapitres,
+  accents et esperluettes).
+- APK debug **et** release compilés ; le manifeste de l'APK a été dumpsé pour
+  vérifier `singleTask`, les trois `intent-filter`, `allowBackup=false` et
+  l'absence de permission superflue.
+
+Non vérifié : tout ce qui demande un téléphone — partage réel, réception sur la
+Kindle, rendu du livre. C'est ce que décrit la checklist.
+
 ## Installer la toolchain
 
 ```bash
