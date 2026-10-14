@@ -180,7 +180,7 @@ void main() {
     test('ne liste que les articles prêts et cochés', () async {
       final a = await addOk('https://exemple.fr/a');
       final b = await addOk('https://exemple.fr/b');
-      final c = await addOk('https://exemple.fr/c');
+      await addOk('https://exemple.fr/c');
       await service.markReady(a.id, contentHtml: '<p>a</p>');
       await service.markReady(b.id, contentHtml: '<p>b</p>');
       // c reste en attente : on ne l'envoie pas avant extraction.

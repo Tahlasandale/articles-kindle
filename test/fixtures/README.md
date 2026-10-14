@@ -88,7 +88,7 @@ Format : `fichier | site | type de page | difficulté | ce qui doit être extrai
 |---|---|---|---|---|
 | `framablog/khryspresso-du-lundi-12-octobre-2026.html` | framablog.org | Transcription d'épisode de podcast (50 000 caractères de texte) | difficile | les **notes de l'épisode** (liste de liens commentés), le résumé et la date — pas la nav Framasoft, pas la liste des podcasts, pas le formulaire d'abonnement |
 | `framablog/khryspresso-du-lundi-28-septembre-2026.html` | framablog.org | idem, épisode du 28 septembre | difficile | idem |
-| `framablog/chapo-upload2-le-solarpunk-pour-toutes-et-tous.html` | framablog.org | newsletter mensuelle Framasoft (134 liens) | difficile | le corps de la newsletter « Upload² » et sesliens, hors blocs podcasts/inscription |
+| `framablog/chapo-upload2-le-solarpunk-pour-toutes-et-tous.html` | framablog.org | newsletter mensuelle Framasoft (134 liens) | difficile | le corps de la newsletter « Upload² » et ses liens, hors blocs podcasts/inscription |
 
 > Pièges : le `<title>` du document est une accroche de la home (**« … mais ce
 > serait peut-être l'une des plus grandes opportunités manquées de notre époque
