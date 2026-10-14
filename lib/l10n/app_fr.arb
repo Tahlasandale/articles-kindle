@@ -126,6 +126,17 @@
 
   "settingsDataSection": "Données",
   "settingsPurge": "Purger les articles envoyés",
+  "settingsExport": "Exporter la configuration (JSON)",
+  "settingsExportCopied": "Configuration copiée dans le presse-papiers.",
+  "settingsImport": "Importer la configuration (JSON)",
+  "settingsImportHint": "Collez votre configuration JSON ici",
+  "settingsImportSuccess": "Configuration importée avec succès.",
+  "settingsImportError": "Erreur lors de l'importation : {error}",
+  "@settingsImportError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
 
   "themeToggleTooltip": "Changer de thème",
 

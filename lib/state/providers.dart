@@ -11,6 +11,7 @@ import 'package:articles_kindle/data/share/share_receiver.dart';
 import 'package:articles_kindle/data/secret_store.dart';
 import 'package:articles_kindle/data/db/database.dart';
 import 'package:articles_kindle/data/settings.dart';
+import 'package:articles_kindle/data/settings_backup_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -27,6 +28,13 @@ final articleServiceProvider = Provider<ArticleService>(
 
 final settingsStoreProvider = Provider<SettingsStore>(
   (ref) => SettingsStore(ref.watch(databaseProvider)),
+);
+
+final settingsBackupServiceProvider = Provider<SettingsBackupService>(
+  (ref) => SettingsBackupService(
+    store: ref.watch(settingsStoreProvider),
+    secrets: ref.watch(secretStoreProvider),
+  ),
 );
 
 /// Réglages de l'application, rechargés au démarrage.

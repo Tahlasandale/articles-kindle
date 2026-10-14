@@ -286,6 +286,27 @@ class L10nFr extends L10n {
   String get settingsPurge => 'Purger les articles envoyés';
 
   @override
+  String get settingsExport => 'Exporter la configuration (JSON)';
+
+  @override
+  String get settingsExportCopied =>
+      'Configuration copiée dans le presse-papiers.';
+
+  @override
+  String get settingsImport => 'Importer la configuration (JSON)';
+
+  @override
+  String get settingsImportHint => 'Collez votre configuration JSON ici';
+
+  @override
+  String get settingsImportSuccess => 'Configuration importée avec succès.';
+
+  @override
+  String settingsImportError(String error) {
+    return 'Erreur lors de l\'importation : $error';
+  }
+
+  @override
   String get themeToggleTooltip => 'Changer de thème';
 
   @override

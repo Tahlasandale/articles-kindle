@@ -1,5 +1,6 @@
 import 'package:articles_kindle/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/mail/kindle_mailer.dart';
@@ -139,18 +140,94 @@ class SettingsScreen extends ConsumerWidget {
                 controller.edit((s) => s.copyWith(themeMode: selection.first)),
           ),
           _Section(title: l10n.settingsDataSection),
-          OutlinedButton.icon(
+          Wrap(
+            spacing: Eink.space2,
+            runSpacing: Eink.space2,
+            children: [
+              OutlinedButton.icon(
+                onPressed: () async {
+                  final json = await ref
+                      .read(settingsBackupServiceProvider)
+                      .exportJson();
+                  await Clipboard.setData(ClipboardData(text: json));
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(content: Text(l10n.settingsExportCopied)),
+                    );
+                },
+                icon: const Icon(Icons.file_upload_outlined),
+                label: Text(l10n.settingsExport),
+              ),
+              OutlinedButton.icon(
+                onPressed: () => _showImportDialog(context, ref),
+                icon: const Icon(Icons.file_download_outlined),
+                label: Text(l10n.settingsImport),
+              ),
+              OutlinedButton.icon(
+                onPressed: () async {
+                  final purged = await ref
+                      .read(articleServiceProvider)
+                      .purgeSentContent();
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(SnackBar(content: Text('$purged')));
+                },
+                icon: const Icon(Icons.delete_sweep_outlined),
+                label: Text(l10n.settingsPurge),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showImportDialog(BuildContext context, WidgetRef ref) {
+    final l10n = L10n.of(context)!;
+    final textController = TextEditingController();
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.settingsImport),
+        content: TextField(
+          controller: textController,
+          maxLines: 6,
+          decoration: InputDecoration(hintText: l10n.settingsImportHint),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
             onPressed: () async {
-              final purged = await ref
-                  .read(articleServiceProvider)
-                  .purgeSentContent();
-              if (!context.mounted) return;
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(SnackBar(content: Text('$purged')));
+              final messenger = ScaffoldMessenger.of(context);
+              try {
+                await ref
+                    .read(settingsBackupServiceProvider)
+                    .importJson(textController.text);
+                ref.invalidate(settingsProvider);
+                if (!dialogContext.mounted) return;
+                Navigator.of(dialogContext).pop();
+                messenger
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(content: Text(l10n.settingsImportSuccess)),
+                  );
+              } catch (e) {
+                if (!dialogContext.mounted) return;
+                messenger
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(content: Text(l10n.settingsImportError('$e'))),
+                  );
+              }
             },
-            icon: const Icon(Icons.delete_sweep_outlined),
-            label: Text(l10n.settingsPurge),
+            child: Text(l10n.commonOk),
           ),
         ],
       ),

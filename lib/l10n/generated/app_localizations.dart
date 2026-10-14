@@ -585,6 +585,42 @@ abstract class L10n {
   /// **'Purger les articles envoyés'**
   String get settingsPurge;
 
+  /// No description provided for @settingsExport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exporter la configuration (JSON)'**
+  String get settingsExport;
+
+  /// No description provided for @settingsExportCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Configuration copiée dans le presse-papiers.'**
+  String get settingsExportCopied;
+
+  /// No description provided for @settingsImport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Importer la configuration (JSON)'**
+  String get settingsImport;
+
+  /// No description provided for @settingsImportHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Collez votre configuration JSON ici'**
+  String get settingsImportHint;
+
+  /// No description provided for @settingsImportSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Configuration importée avec succès.'**
+  String get settingsImportSuccess;
+
+  /// No description provided for @settingsImportError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur lors de l\'importation : {error}'**
+  String settingsImportError(String error);
+
   /// No description provided for @themeToggleTooltip.
   ///
   /// In fr, this message translates to:
