@@ -29,8 +29,9 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
   @override
   void initState() {
     super.initState();
-    _articleFuture =
-        ref.read(articleServiceProvider).findById(widget.articleId);
+    _articleFuture = ref
+        .read(articleServiceProvider)
+        .findById(widget.articleId);
   }
 
   @override
@@ -40,8 +41,9 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
       _controller = null;
       _loadedArticleId = null;
       _loadedContentHtml = null;
-      _articleFuture =
-          ref.read(articleServiceProvider).findById(widget.articleId);
+      _articleFuture = ref
+          .read(articleServiceProvider)
+          .findById(widget.articleId);
     }
   }
 
@@ -68,8 +70,9 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
           _controller = null;
           _loadedArticleId = null;
           _loadedContentHtml = null;
-          _articleFuture =
-              ref.read(articleServiceProvider).findById(widget.articleId);
+          _articleFuture = ref
+              .read(articleServiceProvider)
+              .findById(widget.articleId);
         });
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()

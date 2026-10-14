@@ -37,6 +37,8 @@ class SmtpMailTransport implements MailTransport {
     return password;
   }
 
+  static const Duration connectTimeout = Duration(seconds: 12);
+
   /// Mappe une exception brute SMTP en une [MailFailure] explicite.
   static MailFailure mapException(Object error) {
     if (error is MailFailure) return error;
@@ -48,6 +50,12 @@ class SmtpMailTransport implements MailTransport {
         'Le serveur refuse une connexion non chiffrée.',
       );
     }
+    if (error is mailer.SmtpMessageValidationException) {
+      final details = error.problems.map((p) => p.msg).join(', ');
+      return MailConfigurationIncomplete(
+        'Adresse ou message invalide : $details',
+      );
+    }
     if (error is mailer.SmtpClientCommunicationException) {
       final msg = error.message;
       if (msg.contains('535') ||
@@ -57,17 +65,26 @@ class SmtpMailTransport implements MailTransport {
       }
       return MailServerRefused(msg);
     }
-    if (error is mailer.SmtpNoGreetingException ||
-        error is SocketException ||
-        error is TimeoutException ||
-        error is HandshakeException) {
-      return const MailConnectionFailed();
+    if (error is SocketException) {
+      final detail = error.osError?.message ?? error.message;
+      return MailConnectionFailed(
+        detail.isNotEmpty ? detail : error.toString(),
+      );
+    }
+    if (error is TimeoutException) {
+      return const MailConnectionFailed('Délai d\'attente dépassé (timeout)');
+    }
+    if (error is HandshakeException) {
+      return const MailConnectionFailed('Échec de négociation TLS/SSL');
+    }
+    if (error is mailer.SmtpNoGreetingException) {
+      return const MailConnectionFailed('Le serveur n\'a pas répondu à temps');
     }
     final str = error.toString();
     if (str.contains('535') || str.toLowerCase().contains('auth')) {
       return const MailAuthenticationFailed();
     }
-    return const MailConnectionFailed();
+    return MailConnectionFailed(str);
   }
 
   @override
@@ -80,16 +97,22 @@ class SmtpMailTransport implements MailTransport {
       );
     }
 
-    final resolvedPassword = await resolvePassword() ?? '';
-    if (resolvedPassword.isEmpty) {
+    final rawPassword = await resolvePassword() ?? '';
+    final cleanPassword = rawPassword.trim().replaceAll(' ', '');
+    if (cleanPassword.isEmpty) {
       throw const MailAuthenticationFailed();
     }
 
-    final server = SmtpServer(
-      host,
+    final cleanHost = host.trim();
+    final cleanUsername = username.trim();
+    final cleanFrom = message.from.trim();
+    final cleanTo = message.to.trim();
+
+    final primaryServer = SmtpServer(
+      cleanHost,
       port: port,
-      username: username,
-      password: resolvedPassword,
+      username: cleanUsername,
+      password: cleanPassword,
       ssl: port == 465,
       allowInsecure: false,
     );
@@ -97,8 +120,8 @@ class SmtpMailTransport implements MailTransport {
     final directories = <Directory>[];
 
     final mail = mailer.Message()
-      ..from = message.from
-      ..recipients = [message.to]
+      ..from = cleanFrom
+      ..recipients = [cleanTo]
       ..subject = message.subject
       ..text = message.text.isEmpty ? ' ' : message.text
       ..attachments = [
@@ -110,11 +133,36 @@ class SmtpMailTransport implements MailTransport {
       ];
 
     try {
-      // En mailer 7, un retour sans exception signifie que le serveur a accepté
-      // le message : le refus remonte en `SmtpClientCommunicationException`.
-      await mailer.send(mail, server);
-    } catch (error) {
-      throw mapException(error);
+      try {
+        await mailer.send(mail, primaryServer, timeout: connectTimeout);
+      } catch (primaryError) {
+        // En cas d'échec de connexion (souvent port 587 bloqué par les opérateurs mobiles 4G/5G),
+        // tenter automatiquement le port alternatif sécurisé (465 SSL ou 587 STARTTLS).
+        final isConnectionIssue =
+            primaryError is SocketException ||
+            primaryError is TimeoutException ||
+            primaryError is mailer.SmtpNoGreetingException ||
+            primaryError is HandshakeException;
+
+        if (isConnectionIssue && (port == 587 || port == 465)) {
+          final fallbackPort = port == 587 ? 465 : 587;
+          final fallbackServer = SmtpServer(
+            cleanHost,
+            port: fallbackPort,
+            username: cleanUsername,
+            password: cleanPassword,
+            ssl: fallbackPort == 465,
+            allowInsecure: false,
+          );
+          try {
+            await mailer.send(mail, fallbackServer, timeout: connectTimeout);
+            return;
+          } catch (_) {
+            throw mapException(primaryError);
+          }
+        }
+        throw mapException(primaryError);
+      }
     } finally {
       for (final directory in directories) {
         if (directory.existsSync()) directory.deleteSync(recursive: true);

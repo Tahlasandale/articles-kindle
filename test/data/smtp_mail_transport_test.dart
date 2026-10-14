@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:articles_kindle/data/mail/mail_transport.dart';
@@ -98,11 +99,20 @@ void main() {
       expect(failure.reason, contains('550 User unknown'));
     });
 
-    test('mappe SocketException en MailConnectionFailed', () {
+    test('mappe SocketException en MailConnectionFailed avec détail', () {
       final failure = SmtpMailTransport.mapException(
         const SocketException('Failed host lookup: smtp.gmail.com'),
       );
       expect(failure, isA<MailConnectionFailed>());
+      expect(failure.reason, contains('Failed host lookup'));
+    });
+
+    test('mappe TimeoutException en MailConnectionFailed avec détail', () {
+      final failure = SmtpMailTransport.mapException(
+        TimeoutException('Connexion expirée'),
+      );
+      expect(failure, isA<MailConnectionFailed>());
+      expect(failure.reason, contains('timeout'));
     });
 
     test('mappe SmtpNoGreetingException en MailConnectionFailed', () {
@@ -111,5 +121,15 @@ void main() {
       );
       expect(failure, isA<MailConnectionFailed>());
     });
+
+    test(
+      'mappe SmtpMessageValidationException en MailConfigurationIncomplete',
+      () {
+        final failure = SmtpMailTransport.mapException(
+          mailer.SmtpMessageValidationException('Validation error', []),
+        );
+        expect(failure, isA<MailConfigurationIncomplete>());
+      },
+    );
   });
 }

@@ -65,7 +65,11 @@ void main() {
       await tester.pumpAndSettle();
 
       final testButton = find.text(l10n.sendTestButton);
-      await tester.drag(find.byType(ListView), const Offset(0, -300));
+      await tester.scrollUntilVisible(
+        testButton,
+        100,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.pumpAndSettle();
       expect(testButton, findsOneWidget);
 
@@ -102,5 +106,38 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text(l10n.settingsGoogleLink), findsOneWidget);
+  });
+
+  testWidgets('permet de basculer facilement entre le port 465 et 587', (
+    tester,
+  ) async {
+    final container = containerWithMemoryDatabase();
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(
+          localizationsDelegates: L10n.localizationsDelegates,
+          supportedLocales: L10n.supportedLocales,
+          locale: Locale('fr'),
+          home: SettingsScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final chip465 = find.text('Port 465 (SSL / 4G-5G)');
+    await tester.scrollUntilVisible(
+      chip465,
+      100,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(chip465, findsOneWidget);
+
+    await tester.tap(chip465);
+    await tester.pumpAndSettle();
+
+    expect(container.read(currentSettingsProvider).smtpPort, 465);
   });
 }

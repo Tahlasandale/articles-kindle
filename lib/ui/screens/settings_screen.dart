@@ -68,6 +68,30 @@ class SettingsScreen extends ConsumerWidget {
               (s) => s.copyWith(smtpPort: int.tryParse(v) ?? s.smtpPort),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: Eink.space2),
+            child: Wrap(
+              spacing: Eink.space2,
+              children: [
+                ActionChip(
+                  label: const Text('Port 465 (SSL / 4G-5G)'),
+                  avatar: settings.smtpPort == 465
+                      ? const Icon(Icons.check, size: 16)
+                      : null,
+                  onPressed: () =>
+                      controller.edit((s) => s.copyWith(smtpPort: 465)),
+                ),
+                ActionChip(
+                  label: const Text('Port 587 (STARTTLS)'),
+                  avatar: settings.smtpPort == 587
+                      ? const Icon(Icons.check, size: 16)
+                      : null,
+                  onPressed: () =>
+                      controller.edit((s) => s.copyWith(smtpPort: 587)),
+                ),
+              ],
+            ),
+          ),
           _Field(
             label: l10n.settingsSmtpUsername,
             value: settings.smtpUsername,
@@ -325,6 +349,11 @@ class _PasswordFieldState extends ConsumerState<_PasswordField> {
     super.dispose();
   }
 
+  void _save(String text) {
+    final clean = text.trim().replaceAll(' ', '');
+    ref.read(secretStoreProvider).writePassword(clean);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context)!;
@@ -333,17 +362,20 @@ class _PasswordFieldState extends ConsumerState<_PasswordField> {
       child: TextField(
         controller: _controller,
         obscureText: true,
+        onChanged: _save,
+        onSubmitted: _save,
         decoration: InputDecoration(
           labelText: l10n.settingsSmtpPassword,
+          helperText: 'Espaces supprimés automatiquement (ex: abcd efgh …)',
           suffixIcon: IconButton(
             icon: Icon(_saving ? Icons.hourglass_empty : Icons.save_outlined),
+            tooltip: 'Enregistrer le mot de passe',
             onPressed: _saving
                 ? null
                 : () async {
                     setState(() => _saving = true);
-                    await ref
-                        .read(secretStoreProvider)
-                        .writePassword(_controller.text);
+                    final clean = _controller.text.trim().replaceAll(' ', '');
+                    await ref.read(secretStoreProvider).writePassword(clean);
                     if (!mounted) return;
                     _controller.clear();
                     setState(() => _saving = false);

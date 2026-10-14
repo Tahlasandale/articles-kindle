@@ -54,9 +54,14 @@ class MailAuthenticationFailed extends MailFailure {
 }
 
 class MailConnectionFailed extends MailFailure {
-  const MailConnectionFailed();
+  const MailConnectionFailed([this.detail]);
+
+  final String? detail;
+
   @override
-  String get reason => 'Connexion au serveur impossible. Vérifiez le réseau.';
+  String get reason => detail != null && detail!.isNotEmpty
+      ? 'Connexion au serveur impossible ($detail). Vérifiez le réseau ou le port.'
+      : 'Connexion au serveur impossible. Vérifiez le réseau ou le port.';
 }
 
 class MailServerRefused extends MailFailure {
