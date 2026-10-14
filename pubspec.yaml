@@ -2,7 +2,7 @@ name: articles_kindle
 description: "Vos liens web en un livre EPUB, envoyé à votre Kindle par e-mail."
 publish_to: 'none'
 
-version: 0.1.0+2
+version: 0.1.0+3
 
 environment:
   sdk: ^3.13.5
@@ -48,6 +48,7 @@ dependencies:
   collection: ^1.19.1
   intl: ^0.20.3
   cupertino_icons: ^1.0.8
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

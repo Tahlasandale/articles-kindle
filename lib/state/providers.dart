@@ -85,9 +85,9 @@ final deliveriesProvider = StreamProvider<List<DeliveryRow>>(
   (ref) => ref.watch(articleServiceProvider).watchDeliveries(),
 );
 
-/// Ce qui part dans le prochain livre.
-final sendQueueProvider = FutureProvider<List<ArticleRow>>(
-  (ref) => ref.watch(articleServiceProvider).sendQueue(),
+/// Ce qui part dans le prochain livre, mis à jour en direct.
+final sendQueueProvider = StreamProvider<List<ArticleRow>>(
+  (ref) => ref.watch(articleServiceProvider).watchSendQueue(),
 );
 
 /// Point d'entrée réseau unique pour toute l'application.
@@ -95,10 +95,20 @@ final articleFetcherProvider = Provider<ArticleFetcher>(
   (ref) => DioArticleFetcher(),
 );
 
-final translationServiceProvider = Provider<TranslationService>(
-  (ref) =>
-      MyMemoryTranslationService(fetcher: ref.watch(articleFetcherProvider)),
-);
+final translationServiceProvider = Provider<TranslationService>((ref) {
+  final fetcher = ref.watch(articleFetcherProvider);
+  final settings = ref.watch(currentSettingsProvider);
+  final email = settings.smtpSender.isNotEmpty
+      ? settings.smtpSender
+      : settings.smtpUsername;
+
+  return CompositeTranslationService(
+    services: [
+      GoogleGtxTranslationService(fetcher: fetcher),
+      MyMemoryTranslationService(fetcher: fetcher, email: email),
+    ],
+  );
+});
 
 final extractionJobProvider = Provider<ArticleExtractionJob>(
   (ref) => ArticleExtractionJob(

@@ -207,6 +207,23 @@ void main() {
       await service.markSent([a.id]);
       expect(await service.sendQueue(), isEmpty);
     });
+
+    test('watchSendQueue émet en continu lors des modifications', () async {
+      final stream = service.watchSendQueue();
+      final expectation = expectLater(
+        stream.map((list) => list.map((a) => a.id).toList()),
+        emitsInOrder([
+          [], // vide initialement
+          [], // article ajouté en pending
+          [1], // article passé en ready
+        ]),
+      );
+
+      final a = await addOk('https://exemple.fr/a');
+      await service.markReady(a.id, contentHtml: '<p>a</p>');
+
+      await expectation;
+    });
   });
 
   group('purge', () {

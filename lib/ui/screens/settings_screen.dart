@@ -2,6 +2,7 @@ import 'package:articles_kindle/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/mail/kindle_mailer.dart';
 import '../../data/secret_store.dart';
@@ -43,6 +44,10 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (v) =>
                 controller.edit((s) => s.copyWith(kindleAddress: v)),
           ),
+          _HelperLink(
+            label: l10n.settingsKindleLink,
+            url: 'https://www.amazon.fr/hz/mycd/myx#/home/settings/payment',
+          ),
           _Field(
             label: l10n.settingsBookTitle,
             hint: l10n.settingsBookTitleHint,
@@ -78,6 +83,10 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (v) => controller.edit((s) => s.copyWith(smtpSender: v)),
           ),
           const _PasswordField(),
+          _HelperLink(
+            label: l10n.settingsGoogleLink,
+            url: 'https://myaccount.google.com/apppasswords',
+          ),
           SwitchListTile(
             value: settings.smtpUseTls,
             onChanged: (v) => controller.edit((s) => s.copyWith(smtpUseTls: v)),
@@ -392,6 +401,74 @@ class _SmtpTestButtonState extends ConsumerState<_SmtpTestButton> {
               )
             : const Icon(Icons.send_outlined),
         label: Text(l10n.sendTestButton),
+      ),
+    );
+  }
+}
+
+class _HelperLink extends StatelessWidget {
+  const _HelperLink({required this.label, required this.url});
+
+  final String label;
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = L10n.of(context)!;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: Eink.space1, bottom: Eink.space3),
+      child: InkWell(
+        onTap: () async {
+          final uri = Uri.parse(url);
+          try {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          } catch (_) {}
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.open_in_new,
+              size: 14,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: Eink.space2),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    url,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.copy, size: 14),
+              visualDensity: VisualDensity.compact,
+              tooltip: l10n.linkCopied,
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: url));
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(content: Text(l10n.linkCopied)));
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

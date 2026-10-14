@@ -54,6 +54,39 @@ void main() {
       },
     );
 
+    test('inclut le paramètre de= si un e-mail est fourni', () async {
+      final fetcher = _StubFetcher({
+        'Hello': {
+          'responseData': {'translatedText': 'Bonjour'},
+          'responseStatus': 200,
+        },
+      });
+
+      final service = MyMemoryTranslationService(
+        fetcher: fetcher,
+        email: 'user@example.com',
+      );
+      await service.translateText('Hello');
+
+      expect(fetcher.requestedUrls.first, contains('de=user%40example.com'));
+    });
+
+    test('ignore un avertissement de quota MYMEMORY WARNING et retombe sur original', () async {
+      final fetcher = _StubFetcher({
+        'Hello': {
+          'responseData': {
+            'translatedText':
+                'MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS...',
+          },
+          'responseStatus': 429,
+        },
+      });
+
+      final service = MyMemoryTranslationService(fetcher: fetcher);
+      final result = await service.translateText('Hello');
+      expect(result, 'Hello');
+    });
+
     test('traduit un fragment HTML en conservant la structure des balises', () async {
       final fetcher = _StubFetcher({
         'First+title': {
@@ -116,5 +149,53 @@ void main() {
         }
       },
     );
+  });
+
+  group('GoogleGtxTranslationService', () {
+    test(
+      'traduit un texte en parsant la réponse hiérarchique Google Translate',
+      () async {
+        final fetcher = _StubFetcher({
+          'client=gtx': [
+            [
+              ['Bonjour le monde', 'Hello world', null, null, 10],
+            ],
+            null,
+            'en',
+          ],
+        });
+
+        final service = GoogleGtxTranslationService(fetcher: fetcher);
+        final translated = await service.translateText('Hello world');
+
+        expect(translated, 'Bonjour le monde');
+        expect(fetcher.requestedUrls.first, contains('client=gtx'));
+      },
+    );
+  });
+
+  group('CompositeTranslationService', () {
+    test('utilise le second service si le premier échoue', () async {
+      // Premier service échoue (renvoie original)
+      final failingFetcher = _StubFetcher({});
+      final primary = MyMemoryTranslationService(fetcher: failingFetcher);
+
+      // Second service réussit
+      final succeedingFetcher = _StubFetcher({
+        'client=gtx': [
+          [
+            ['Bonjour secouru', 'Hello rescued', null, null, 10],
+          ],
+        ],
+      });
+      final fallback = GoogleGtxTranslationService(fetcher: succeedingFetcher);
+
+      final composite = CompositeTranslationService(
+        services: [primary, fallback],
+      );
+
+      final translated = await composite.translateText('Hello rescued');
+      expect(translated, 'Bonjour secouru');
+    });
   });
 }

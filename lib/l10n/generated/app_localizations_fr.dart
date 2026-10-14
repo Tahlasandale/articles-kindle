@@ -361,6 +361,26 @@ class L10nFr extends L10n {
       'Aucun contenu disponible pour la lecture hors-ligne.';
 
   @override
+  String get readerRetranslate => 'Retraduire l\'article';
+
+  @override
+  String get readerRetranslating => 'Retraduction en cours…';
+
+  @override
+  String get readerRetranslateSuccess => 'Article retraduit avec succès.';
+
+  @override
+  String get settingsKindleLink =>
+      'Gérer votre adresse Kindle et les expéditeurs autorisés (Amazon)';
+
+  @override
+  String get settingsGoogleLink =>
+      'Générer un mot de passe d\'application (Compte Google)';
+
+  @override
+  String get linkCopied => 'Lien copié dans le presse-papiers.';
+
+  @override
   String get commonCancel => 'Annuler';
 
   @override

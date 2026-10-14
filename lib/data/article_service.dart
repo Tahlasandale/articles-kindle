@@ -163,6 +163,12 @@ class ArticleService {
     )..where((a) => a.id.equals(id))).getSingleOrNull();
   }
 
+  Stream<ArticleRow?> watchById(int id) {
+    return (_db.select(
+      _db.articles,
+    )..where((a) => a.id.equals(id))).watchSingleOrNull();
+  }
+
   /// Ce qui part dans le livre : prêt, coché, dans l'ordre choisi.
   Future<List<ArticleRow>> sendQueue() {
     return (_db.select(_db.articles)
@@ -173,6 +179,18 @@ class ArticleService {
           )
           ..orderBy([(a) => OrderingTerm.asc(a.sortIndex)]))
         .get();
+  }
+
+  /// Écoute en direct ce qui part dans le livre.
+  Stream<List<ArticleRow>> watchSendQueue() {
+    return (_db.select(_db.articles)
+          ..where(
+            (a) =>
+                a.status.equals(ArticleStatus.ready.name) &
+                a.selected.equals(true),
+          )
+          ..orderBy([(a) => OrderingTerm.asc(a.sortIndex)]))
+        .watch();
   }
 
   /// Tout ce qui est visible dans l'onglet « À lire ».

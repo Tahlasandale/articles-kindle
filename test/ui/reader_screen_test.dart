@@ -125,4 +125,29 @@ void main() {
       expect(find.text('Article déjà envoyé'), findsOneWidget);
     },
   );
+
+  testWidgets("ReaderScreen affiche le bouton de retraduction", (tester) async {
+    final container = containerWithMemoryDatabase();
+    final article = await seedReadyArticle(
+      container,
+      'https://example.com/art-translate',
+      title: 'Article à retraduire',
+      contentHtml: '<p>Contenu initial</p>',
+    );
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          localizationsDelegates: L10n.localizationsDelegates,
+          supportedLocales: L10n.supportedLocales,
+          home: ReaderScreen(articleId: article.id),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final retranslateIcon = find.byIcon(Icons.translate);
+    expect(retranslateIcon, findsOneWidget);
+  });
 }

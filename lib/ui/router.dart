@@ -108,7 +108,13 @@ class AppShell extends StatelessWidget {
 }
 
 /// Style d'une feuille modale : bord liseré, coins droits.
-const einkSheetShape = RoundedRectangleBorder(
-  borderRadius: BorderRadius.zero,
-  side: BorderSide(width: Eink.borderWidthStrong, color: Colors.black),
-);
+ShapeBorder einkSheetShape(BuildContext context) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  return RoundedRectangleBorder(
+    borderRadius: BorderRadius.zero,
+    side: BorderSide(
+      width: Eink.borderWidthStrong,
+      color: isDark ? Eink.darkBorder : Eink.border,
+    ),
+  );
+}

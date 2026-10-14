@@ -162,6 +162,13 @@
   "readerTitle": "Lecture",
   "readerActionRead": "Lire",
   "readerNoContent": "Aucun contenu disponible pour la lecture hors-ligne.",
+  "readerRetranslate": "Retraduire l'article",
+  "readerRetranslating": "Retraduction en cours…",
+  "readerRetranslateSuccess": "Article retraduit avec succès.",
+
+  "settingsKindleLink": "Gérer votre adresse Kindle et les expéditeurs autorisés (Amazon)",
+  "settingsGoogleLink": "Générer un mot de passe d'application (Compte Google)",
+  "linkCopied": "Lien copié dans le presse-papiers.",
 
   "commonCancel": "Annuler",
   "commonDelete": "Supprimer",

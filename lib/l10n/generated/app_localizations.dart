@@ -711,6 +711,42 @@ abstract class L10n {
   /// **'Aucun contenu disponible pour la lecture hors-ligne.'**
   String get readerNoContent;
 
+  /// No description provided for @readerRetranslate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retraduire l\'article'**
+  String get readerRetranslate;
+
+  /// No description provided for @readerRetranslating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retraduction en cours…'**
+  String get readerRetranslating;
+
+  /// No description provided for @readerRetranslateSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Article retraduit avec succès.'**
+  String get readerRetranslateSuccess;
+
+  /// No description provided for @settingsKindleLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gérer votre adresse Kindle et les expéditeurs autorisés (Amazon)'**
+  String get settingsKindleLink;
+
+  /// No description provided for @settingsGoogleLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer un mot de passe d\'application (Compte Google)'**
+  String get settingsGoogleLink;
+
+  /// No description provided for @linkCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien copié dans le presse-papiers.'**
+  String get linkCopied;
+
   /// No description provided for @commonCancel.
   ///
   /// In fr, this message translates to:

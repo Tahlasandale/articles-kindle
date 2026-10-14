@@ -3,6 +3,7 @@ import 'package:articles_kindle/data/db/database.dart';
 import 'package:articles_kindle/data/extraction/article_extraction_job.dart';
 import 'package:articles_kindle/data/extraction/extraction_service.dart';
 import 'package:articles_kindle/data/net/article_fetcher.dart';
+import 'package:articles_kindle/data/translation/translation_service.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -144,4 +145,41 @@ void main() {
       expect(result.contentHtml, '<p>Le texte du flux</p>');
     },
   );
+
+  test('retranslate relance le traitement et force la traduction', () async {
+    final id = await seed('https://exemple.fr/en');
+    final job = ArticleExtractionJob(
+      articles,
+      ExtractionService(
+        _StubFetcher({'https://exemple.fr/en': page(title: 'English Title')}),
+      ),
+      translation: _FakeTranslationService(),
+    );
+
+    final outcome = await job.retranslate(id);
+    expect(outcome, isA<ExtractedArticle>());
+    final result = await row(id);
+    expect(result.title, 'English Title [FR]');
+    expect(result.contentHtml, contains('[FR]'));
+  });
+}
+
+class _FakeTranslationService implements TranslationService {
+  @override
+  Future<String> translateText(
+    String text, {
+    String sourceLang = 'en',
+    String targetLang = 'fr',
+  }) async {
+    return '$text [FR]';
+  }
+
+  @override
+  Future<String> translateHtml(
+    String html, {
+    String sourceLang = 'en',
+    String targetLang = 'fr',
+  }) async {
+    return html.replaceAll('<p>', '<p>[FR] ');
+  }
 }

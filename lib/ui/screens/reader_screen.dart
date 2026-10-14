@@ -1,4 +1,5 @@
 import 'package:articles_kindle/data/db/database.dart';
+import 'package:articles_kindle/data/extraction/extraction_service.dart';
 import 'package:articles_kindle/l10n/generated/app_localizations.dart';
 import 'package:articles_kindle/state/providers.dart';
 import 'package:articles_kindle/ui/screens/to_read_screen.dart';
@@ -21,6 +22,76 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
   WebViewController? _controller;
   int? _loadedArticleId;
   Brightness? _loadedBrightness;
+  String? _loadedContentHtml;
+  bool _isRetranslating = false;
+  late Future<ArticleRow?> _articleFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _articleFuture =
+        ref.read(articleServiceProvider).findById(widget.articleId);
+  }
+
+  @override
+  void didUpdateWidget(covariant ReaderScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.articleId != widget.articleId) {
+      _controller = null;
+      _loadedArticleId = null;
+      _loadedContentHtml = null;
+      _articleFuture =
+          ref.read(articleServiceProvider).findById(widget.articleId);
+    }
+  }
+
+  Future<void> _retranslate() async {
+    if (_isRetranslating) return;
+    setState(() => _isRetranslating = true);
+    final l10n = L10n.of(context)!;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(l10n.readerRetranslating),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+
+    try {
+      final outcome = await ref
+          .read(extractionJobProvider)
+          .retranslate(widget.articleId);
+      if (!mounted) return;
+      if (outcome is ExtractedArticle) {
+        setState(() {
+          _controller = null;
+          _loadedArticleId = null;
+          _loadedContentHtml = null;
+          _articleFuture =
+              ref.read(articleServiceProvider).findById(widget.articleId);
+        });
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text(l10n.readerRetranslateSuccess)),
+          );
+      } else {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(l10n.statusFailed)));
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text('${l10n.statusFailed}: $e')));
+    } finally {
+      if (mounted) {
+        setState(() => _isRetranslating = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +99,11 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
     final brightness = Theme.of(context).brightness;
 
     return FutureBuilder<ArticleRow?>(
-      future: ref.watch(articleServiceProvider).findById(widget.articleId),
+      future: _articleFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
-            _controller == null) {
+            _controller == null &&
+            !snapshot.hasData) {
           return Scaffold(
             appBar: AppBar(title: Text(l10n.readerTitle)),
             body: const Center(child: CircularProgressIndicator()),
@@ -42,25 +114,47 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
         final title = article?.title ?? l10n.readerTitle;
         final html = article?.contentHtml;
 
+        final actions = [
+          if (_isRetranslating)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: Eink.space2),
+              child: Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+            )
+          else
+            IconButton(
+              icon: const Icon(Icons.translate),
+              tooltip: l10n.readerRetranslate,
+              onPressed: _retranslate,
+            ),
+          const ThemeButton(),
+          const SizedBox(width: Eink.space2),
+        ];
+
         if (article == null || html == null || html.trim().isEmpty) {
           return Scaffold(
-            appBar: AppBar(
-              title: Text(title),
-              actions: const [
-                ThemeButton(),
-                SizedBox(width: Eink.space2),
-              ],
-            ),
+            appBar: AppBar(title: Text(title), actions: actions),
             body: EmptyState(
               title: l10n.statusFailed,
               body: l10n.readerNoContent,
+              action: FilledButton.icon(
+                onPressed: _isRetranslating ? null : _retranslate,
+                icon: const Icon(Icons.refresh),
+                label: Text(l10n.readerRetranslate),
+              ),
             ),
           );
         }
 
         if (_controller == null ||
             _loadedArticleId != widget.articleId ||
-            _loadedBrightness != brightness) {
+            _loadedBrightness != brightness ||
+            _loadedContentHtml != html) {
           _controller = WebViewController()
             ..setBackgroundColor(
               brightness == Brightness.dark
@@ -77,16 +171,11 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
           _controller!.loadHtmlString(styledHtml);
           _loadedArticleId = widget.articleId;
           _loadedBrightness = brightness;
+          _loadedContentHtml = html;
         }
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text(title),
-            actions: const [
-              ThemeButton(),
-              SizedBox(width: Eink.space2),
-            ],
-          ),
+          appBar: AppBar(title: Text(title), actions: actions),
           body: WebViewWidget(controller: _controller!),
         );
       },

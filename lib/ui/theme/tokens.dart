@@ -128,8 +128,11 @@ class Eink {
         scrolledUnderElevation: 0,
         centerTitle: false,
         titleTextStyle: titleLarge.copyWith(color: scheme.onSurface),
-        shape: const Border(
-          bottom: BorderSide(width: borderWidthStrong, color: Colors.black),
+        shape: Border(
+          bottom: BorderSide(
+            width: borderWidthStrong,
+            color: isDark ? darkBorder : border,
+          ),
         ),
       ),
       cardTheme: CardThemeData(
@@ -227,10 +230,13 @@ class Eink {
         backgroundColor: scheme.primary,
         foregroundColor: scheme.onPrimary,
         elevation: 0,
+        focusElevation: 0,
+        hoverElevation: 0,
+        highlightElevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius),
+          borderRadius: BorderRadius.circular(radiusControl),
           side: BorderSide(
-            width: borderWidth,
+            width: borderWidthStrong,
             color: isDark ? darkBorder : border,
           ),
         ),
@@ -275,7 +281,10 @@ class Eink {
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: scheme.surface,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
+        titleTextStyle: titleMedium.copyWith(color: scheme.onSurface),
+        contentTextStyle: body.copyWith(color: scheme.onSurface),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,
           side: BorderSide(
@@ -284,12 +293,18 @@ class Eink {
           ),
         ),
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: Eink.background,
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: scheme.surface,
         surfaceTintColor: Colors.transparent,
+        modalBackgroundColor: scheme.surface,
+        elevation: 0,
+        modalElevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,
-          side: BorderSide(width: borderWidthStrong, color: Colors.black),
+          side: BorderSide(
+            width: borderWidthStrong,
+            color: isDark ? darkBorder : border,
+          ),
         ),
       ),
     );

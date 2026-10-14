@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/db/database.dart';
 import '../../data/db/tables.dart';
+import '../../data/extraction/extraction_service.dart';
 import '../../data/ingest.dart';
 import '../../state/providers.dart';
 import '../theme/tokens.dart';
@@ -38,6 +39,8 @@ class _ToReadScreenState extends ConsumerState<ToReadScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _openAddSheet,
         tooltip: l10n.toReadAddUrl,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         child: const Icon(Icons.add),
       ),
       body: Column(
@@ -243,6 +246,7 @@ class _ArticleList extends ConsumerWidget {
                 : null,
             onTap: () =>
                 service.setSelected([article.id], selected: !article.selected),
+            onLongPress: () => _showArticleActions(context, ref, article),
             trailing:
                 article.contentHtml != null &&
                     article.contentHtml!.trim().isNotEmpty
@@ -256,7 +260,77 @@ class _ArticleList extends ConsumerWidget {
       },
     );
   }
+
+  Future<void> _showArticleActions(
+    BuildContext context,
+    WidgetRef ref,
+    ArticleRow article,
+  ) async {
+    final l10n = L10n.of(context)!;
+    final service = ref.read(articleServiceProvider);
+
+    final action = await showModalBottomSheet<_ArticleAction>(
+      context: context,
+      showDragHandle: false,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (article.contentHtml != null &&
+                article.contentHtml!.trim().isNotEmpty)
+              ListTile(
+                leading: const Icon(Icons.chrome_reader_mode_outlined),
+                title: Text(l10n.readerActionRead),
+                onTap: () => Navigator.of(context).pop(_ArticleAction.read),
+              ),
+            ListTile(
+              leading: const Icon(Icons.translate),
+              title: Text(l10n.readerRetranslate),
+              onTap: () =>
+                  Navigator.of(context).pop(_ArticleAction.retranslate),
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_outline),
+              title: Text(l10n.commonDelete),
+              onTap: () => Navigator.of(context).pop(_ArticleAction.delete),
+            ),
+            const SizedBox(height: Eink.space2),
+          ],
+        ),
+      ),
+    );
+
+    if (!context.mounted || action == null) return;
+
+    switch (action) {
+      case _ArticleAction.read:
+        context.push('/reader/${article.id}');
+      case _ArticleAction.retranslate:
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(l10n.readerRetranslating)));
+        final outcome = await ref
+            .read(extractionJobProvider)
+            .retranslate(article.id);
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(
+                outcome is ExtractedArticle
+                    ? l10n.readerRetranslateSuccess
+                    : l10n.statusFailed,
+              ),
+            ),
+          );
+      case _ArticleAction.delete:
+        await service.delete(article.id);
+    }
+  }
 }
+
+enum _ArticleAction { read, retranslate, delete }
 
 class _ThemeButton extends ConsumerWidget {
   const _ThemeButton();

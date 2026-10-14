@@ -83,6 +83,48 @@ class ArticleExtractionJob {
     }
   }
 
+  /// Relance le traitement et la traduction complète d'un article depuis sa source web.
+  Future<ExtractionOutcome> retranslate(int articleId) async {
+    final article = await _articles.findById(articleId);
+    if (article == null) {
+      return ExtractionFailure('Article introuvable');
+    }
+
+    final outcome = await _extraction.fetchAndExtract(article.url);
+    switch (outcome) {
+      case ExtractionFailure(:final reason):
+        await _articles.markFailed(articleId, error: reason);
+        return outcome;
+      case ExtractedArticle():
+        var title = outcome.title;
+        var html = outcome.contentHtml;
+        if (translation != null) {
+          if (title != null && title.isNotEmpty) {
+            title = await translation!.translateText(title);
+          }
+          if (html.isNotEmpty) {
+            html = await translation!.translateHtml(html);
+          }
+        }
+        await _articles.markReady(
+          articleId,
+          title: title,
+          author: outcome.author,
+          siteName: outcome.siteName,
+          publishedAt: outcome.publishedAt,
+          contentHtml: html,
+        );
+        return ExtractedArticle(
+          title: title,
+          author: outcome.author,
+          siteName: outcome.siteName,
+          publishedAt: outcome.publishedAt,
+          contentHtml: html,
+          plainText: outcome.plainText,
+        );
+    }
+  }
+
   /// Traite plusieurs articles sans qu'un échec arrête les autres.
   Future<Map<int, ExtractionOutcome>> processAll(List<int> articleIds) async {
     final results = <int, ExtractionOutcome>{};

@@ -75,4 +75,32 @@ void main() {
       expect(find.text(l10n.sendTestSuccess), findsOneWidget);
     },
   );
+
+  testWidgets('affiche les liens d aide vers Amazon et Google', (tester) async {
+    final container = containerWithMemoryDatabase();
+    final l10n = await L10n.delegate.load(const Locale('fr'));
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(
+          localizationsDelegates: L10n.localizationsDelegates,
+          supportedLocales: L10n.supportedLocales,
+          locale: Locale('fr'),
+          home: SettingsScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.settingsKindleLink), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text(l10n.settingsGoogleLink),
+      100,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.settingsGoogleLink), findsOneWidget);
+  });
 }
