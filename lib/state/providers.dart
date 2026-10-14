@@ -126,8 +126,7 @@ final mailTransportProvider = Provider<MailTransport>((ref) {
     host: settings.smtpHost,
     port: settings.smtpPort,
     username: settings.smtpUsername,
-    // Le mot de passe est relu du Keystore au dernier moment, au moment d'envoyer.
-    password: '',
+    passwordProvider: () => ref.read(secretStoreProvider).readPassword(),
     useTls: settings.smtpUseTls,
   );
 });

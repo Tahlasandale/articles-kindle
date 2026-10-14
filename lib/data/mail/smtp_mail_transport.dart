@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:mailer/mailer.dart' as mailer;
@@ -15,15 +16,59 @@ class SmtpMailTransport implements MailTransport {
     required this.host,
     required this.port,
     required this.username,
-    required this.password,
+    this.password,
+    this.passwordProvider,
     required this.useTls,
-  });
+  }) : assert(
+         password != null || passwordProvider != null,
+         'Fournissez un mot de passe ou un passwordProvider.',
+       );
 
   final String host;
   final int port;
   final String username;
-  final String password;
+  final String? password;
+  final Future<String?> Function()? passwordProvider;
   final bool useTls;
+
+  Future<String?> resolvePassword() async {
+    if (password != null && password!.isNotEmpty) return password;
+    if (passwordProvider != null) return await passwordProvider!();
+    return password;
+  }
+
+  /// Mappe une exception brute SMTP en une [MailFailure] explicite.
+  static MailFailure mapException(Object error) {
+    if (error is MailFailure) return error;
+    if (error is mailer.SmtpClientAuthenticationException) {
+      return const MailAuthenticationFailed();
+    }
+    if (error is mailer.SmtpUnsecureException) {
+      return const MailConfigurationIncomplete(
+        'Le serveur refuse une connexion non chiffrée.',
+      );
+    }
+    if (error is mailer.SmtpClientCommunicationException) {
+      final msg = error.message;
+      if (msg.contains('535') ||
+          msg.toLowerCase().contains('authentication') ||
+          msg.toLowerCase().contains('credential')) {
+        return const MailAuthenticationFailed();
+      }
+      return MailServerRefused(msg);
+    }
+    if (error is mailer.SmtpNoGreetingException ||
+        error is SocketException ||
+        error is TimeoutException ||
+        error is HandshakeException) {
+      return const MailConnectionFailed();
+    }
+    final str = error.toString();
+    if (str.contains('535') || str.toLowerCase().contains('auth')) {
+      return const MailAuthenticationFailed();
+    }
+    return const MailConnectionFailed();
+  }
 
   @override
   Future<void> send(OutgoingMessage message) async {
@@ -35,11 +80,16 @@ class SmtpMailTransport implements MailTransport {
       );
     }
 
+    final resolvedPassword = await resolvePassword() ?? '';
+    if (resolvedPassword.isEmpty) {
+      throw const MailAuthenticationFailed();
+    }
+
     final server = SmtpServer(
       host,
       port: port,
       username: username,
-      password: password,
+      password: resolvedPassword,
       ssl: port == 465,
       allowInsecure: false,
     );
@@ -63,16 +113,8 @@ class SmtpMailTransport implements MailTransport {
       // En mailer 7, un retour sans exception signifie que le serveur a accepté
       // le message : le refus remonte en `SmtpClientCommunicationException`.
       await mailer.send(mail, server);
-    } on mailer.SmtpClientAuthenticationException {
-      throw const MailAuthenticationFailed();
-    } on mailer.SmtpUnsecureException {
-      throw const MailConfigurationIncomplete(
-        'Le serveur refuse une connexion non chiffrée.',
-      );
-    } on MailFailure {
-      rethrow;
     } catch (error) {
-      throw const MailConnectionFailed();
+      throw mapException(error);
     } finally {
       for (final directory in directories) {
         if (directory.existsSync()) directory.deleteSync(recursive: true);
