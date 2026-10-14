@@ -36,5 +36,10 @@ l'extracteur doit réussir**, pas à alimenter une fonctionnalité de l'applicat
   tout ce que le Markdown ne sait pas représenter (tableaux complexes, figures).
 - Il n'est pas une référence absolue. En cas de désaccord, c'est le contenu de la page
   qui tranche, pas le service.
+- **Il échoue sur certains sites.** En octobre 2026, `curl.md` répond 200 sur
+  `example.com` mais `fetch_failed / Upstream returned 404` sur une page de korben.info
+  pourtant parfaitement lisible. C'est une limite de l'outil, pas la preuve d'un
+  problème d'extraction de notre côté : un oracle muet n'est pas une preuve, seulement
+  une absence de contradiction.
 - Ses plans sont payants et son comportement peut changer. Aucun test du dépôt ne doit
   dépendre d'un appel réseau à curl.md.

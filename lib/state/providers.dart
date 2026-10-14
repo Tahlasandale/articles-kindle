@@ -6,6 +6,7 @@ import 'package:articles_kindle/data/mail/kindle_mailer.dart';
 import 'package:articles_kindle/data/mail/mail_transport.dart';
 import 'package:articles_kindle/data/mail/smtp_mail_transport.dart';
 import 'package:articles_kindle/data/net/article_fetcher.dart';
+import 'package:articles_kindle/data/share/share_receiver.dart';
 import 'package:articles_kindle/data/secret_store.dart';
 import 'package:articles_kindle/data/db/database.dart';
 import 'package:articles_kindle/data/settings.dart';
@@ -90,6 +91,8 @@ final extractionJobProvider = Provider<ArticleExtractionJob>(
     ExtractionService(ref.watch(articleFetcherProvider)),
   ),
 );
+
+final shareReceiverProvider = Provider<ShareReceiver>((ref) => ShareReceiver());
 
 final ingestProvider = Provider<ArticleIngest>(
   (ref) => ArticleIngest(

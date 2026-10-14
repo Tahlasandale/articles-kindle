@@ -17,8 +17,23 @@ livre EPUB et l'envoie à votre liseuse **Kindle 7e génération** à votre adre
 
 **Documentation** : la spec complète est dans [`docs/design-doc.md`](docs/design-doc.md),
 les écarts assumés et les choix de dépendance dans [`DECISIONS.md`](DECISIONS.md), les
-portes à passer dans [`AGENTS.md`](AGENTS.md), le service de comparaison utilisé en
-développement dans [`docs/CURL.md`](docs/CURL.md).
+portes à passer dans [`AGENTS.md`](AGENTS.md), la recette de validation sur votre
+téléphone dans [`docs/CHECKLIST-APPAREIL.md`](docs/CHECKLIST-APPAREIL.md), le service
+de comparaison utilisé en développement dans [`docs/CURL.md`](docs/CURL.md).
+
+## État
+
+Chaque jalon est commité et tagué :
+
+| Jalon | Contenu | Tag |
+|---|---|---|
+| M1 Socle | base Drift, design system, quatre onglets, découverte de site | `v0.1-m1` |
+| M2 Extraction | contenu lisible, score de densité, statuts, erreurs | `v0.1-m2` |
+| M3 EPUB + envoi | générateur EPUB validé par epubcheck, envoi SMTP | `v0.1-m3` |
+| M4 Partage | réception du menu Partager Android | `v0.1-m4` |
+
+Reste à faire : la recette de [`docs/CHECKLIST-APPAREIL.md`](docs/CHECKLIST-APPAREIL.md),
+sur votre téléphone.
 
 ## Installer la toolchain
 
