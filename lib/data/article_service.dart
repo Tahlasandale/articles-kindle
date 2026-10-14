@@ -157,6 +157,12 @@ class ArticleService {
     }
   }
 
+  Future<ArticleRow?> findById(int id) {
+    return (_db.select(
+      _db.articles,
+    )..where((a) => a.id.equals(id))).getSingleOrNull();
+  }
+
   /// Ce qui part dans le livre : prêt, coché, dans l'ordre choisi.
   Future<List<ArticleRow>> sendQueue() {
     return (_db.select(_db.articles)

@@ -65,8 +65,9 @@ class SiteDiscoveryService {
       final type = link.attributes['type']?.toLowerCase() ?? '';
       if (type.contains('rss') || type.contains('atom')) {
         final href = link.attributes['href'];
-        if (href != null && href.isNotEmpty)
+        if (href != null && href.isNotEmpty) {
           return Uri.parse(pageUrl).resolve(href).toString();
+        }
       }
     }
 
