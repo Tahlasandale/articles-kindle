@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:articles_kindle/data/epub/epub_builder.dart';
@@ -159,10 +160,10 @@ void main() {
             url: 'https://exemple.fr/a',
             contentHtml:
                 '<p>Texte</p><img src="images/001-01.jpg" alt="Photo"/>',
-            images: const [
+            images: [
               EpubImage(
                 fileName: '001-01.jpg',
-                bytes: [0xFF, 0xD8, 0xFF, 0xE0],
+                bytes: Uint8List.fromList([0xFF, 0xD8, 0xFF, 0xE0]),
                 mimeType: 'image/jpeg',
               ),
             ],

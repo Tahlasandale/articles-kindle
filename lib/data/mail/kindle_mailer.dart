@@ -1,6 +1,7 @@
 import 'package:articles_kindle/data/article_service.dart';
 import 'package:articles_kindle/data/db/database.dart';
 import 'package:articles_kindle/data/epub/epub_builder.dart';
+import 'package:articles_kindle/data/images/image_downloader.dart';
 import 'package:articles_kindle/data/mail/mail_transport.dart';
 import 'package:articles_kindle/data/secret_store.dart';
 import 'package:articles_kindle/data/settings.dart';
@@ -42,6 +43,7 @@ class KindleMailer {
     required this.secrets,
     required this.settings,
     required this.bookTitle,
+    this._images,
     DateTime Function()? now,
   }) : _now = now ?? DateTime.now;
 
@@ -50,6 +52,7 @@ class KindleMailer {
   final SecretStore secrets;
   final AppSettings settings;
   final String bookTitle;
+  final ImageDownloader? _images;
   final DateTime Function() _now;
 
   Future<SendEstimate> estimate() async {
@@ -73,16 +76,42 @@ class KindleMailer {
       identifier: _identifierFor(title),
       createdAt: DateTime.now().toUtc(),
       chapters: [
-        for (final article in queue)
-          EpubChapter(
-            title: article.title ?? article.url,
-            url: article.url,
-            contentHtml: article.contentHtml ?? '',
-            author: article.author,
-            siteName: article.siteName,
-            publishedAt: article.publishedAt,
-          ),
+        for (final (index, article) in queue.indexed)
+          await _chapterOf(article, index),
       ],
+    );
+  }
+
+  /// Un chapitre, images comprise. Sans téléchargement d'images, le HTML garde
+  /// ses URL distantes : Amazon les récupère, mais le livre n'est plus lisible
+  /// hors ligne et pèse moins bien.
+  Future<EpubChapter> _chapterOf(ArticleRow article, int index) async {
+    var html = article.contentHtml ?? '';
+    var images = const <EpubImage>[];
+
+    if (settings.downloadImages && _images != null) {
+      final processed = await _images.process(
+        html,
+        chapterIndex: index,
+        maxWidth: settings.imageMaxWidth,
+        grayscale: settings.grayscaleImages,
+      );
+      html = processed.html;
+      images = processed.images;
+    } else {
+      // Sans images, on retire les balises plutôt que de laisser des trous et
+      // des URL mortes dans le livre.
+      html = html.replaceAll(RegExp(r'<img[^>]*>'), '');
+    }
+
+    return EpubChapter(
+      title: article.title ?? article.url,
+      url: article.url,
+      contentHtml: html,
+      author: article.author,
+      siteName: article.siteName,
+      publishedAt: article.publishedAt,
+      images: images,
     );
   }
 

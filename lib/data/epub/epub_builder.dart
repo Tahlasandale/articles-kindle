@@ -6,14 +6,17 @@ import 'package:archive/archive.dart';
 
 /// Une image téléchargée et déjà redimensionnée.
 class EpubImage {
-  const EpubImage({
+  EpubImage({
     required this.fileName,
     required this.bytes,
     required this.mimeType,
   });
 
   final String fileName;
-  final List<int> bytes;
+
+  /// `Uint8List` et non `List<int>` : le décodeur d'images et l'archive attendent
+  /// des octets contigus, pas une liste d'entiers.
+  final Uint8List bytes;
   final String mimeType;
 }
 
@@ -183,7 +186,7 @@ td, th { border: 1px solid; padding: 0.2em 0.3em; }
     archive.addFile(ArchiveFile(name, bytes.length, bytes));
   }
 
-  void _addBytes(Archive archive, String name, List<int> bytes) {
+  void _addBytes(Archive archive, String name, Uint8List bytes) {
     archive.addFile(ArchiveFile(name, bytes.length, bytes));
   }
 

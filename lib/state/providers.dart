@@ -1,6 +1,7 @@
 import 'package:articles_kindle/data/article_service.dart';
 import 'package:articles_kindle/data/extraction/article_extraction_job.dart';
 import 'package:articles_kindle/data/extraction/extraction_service.dart';
+import 'package:articles_kindle/data/images/image_downloader.dart';
 import 'package:articles_kindle/data/ingest.dart';
 import 'package:articles_kindle/data/mail/kindle_mailer.dart';
 import 'package:articles_kindle/data/mail/mail_transport.dart';
@@ -101,8 +102,14 @@ final ingestProvider = Provider<ArticleIngest>(
   ),
 );
 
+/// Téléchargement des images des chapitres, avant la fabrication du livre.
+final imageDownloaderProvider = Provider<ImageDownloader>(
+  (ref) => ImageDownloader(DioBinaryFetcher()),
+);
+
 final mailerProvider = Provider<KindleMailer>(
   (ref) => KindleMailer(
+    images: ref.watch(imageDownloaderProvider),
     transport: ref.watch(mailTransportProvider),
     articles: ref.watch(articleServiceProvider),
     secrets: ref.watch(secretStoreProvider),

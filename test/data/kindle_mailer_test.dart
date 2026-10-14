@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:articles_kindle/data/article_service.dart';
 import 'package:articles_kindle/data/db/database.dart';
 import 'package:articles_kindle/data/epub/epub_builder.dart';
@@ -5,8 +7,25 @@ import 'package:articles_kindle/data/mail/kindle_mailer.dart';
 import 'package:articles_kindle/data/mail/mail_transport.dart';
 import 'package:articles_kindle/data/secret_store.dart';
 import 'package:articles_kindle/data/settings.dart';
+import 'package:articles_kindle/data/images/image_downloader.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image/image.dart' as img;
+
+Uint8List jpeg(int width, int height) {
+  final image = img.Image(width: width, height: height);
+  img.fill(image, color: img.ColorRgb8(180, 180, 180));
+  return Uint8List.fromList(img.encodeJpg(image));
+}
+
+class _StubBinaryFetcher implements BinaryFetcher {
+  _StubBinaryFetcher(this.bytes);
+
+  final Uint8List bytes;
+
+  @override
+  Future<Uint8List> get(String url) async => bytes;
+}
 
 /// Transport factice : enregistre ce qui aurait été envoyé, n'envoie rien.
 class FakeMailTransport implements MailTransport {
@@ -208,6 +227,62 @@ void main() {
       final message = transport.sent.single;
       expect(message.attachments.single.fileName, 'test-epubcheck.epub');
       expect(message.attachments.single.bytes.length, lessThan(20000));
+    });
+  });
+
+  group('images', () {
+    const html =
+        '<p>Le texte.</p><img src="https://exemple.fr/photo.jpg" alt="Photo"/>';
+
+    Future<void> seedWithImage() async {
+      final result = await articles.addUrl('https://exemple.fr/a');
+      final id = (result as ArticleAdded).article.id;
+      await articles.markReady(id, title: 'Avec image', contentHtml: html);
+    }
+
+    KindleMailer withImages({required bool download}) => KindleMailer(
+      transport: transport,
+      articles: articles,
+      secrets: secrets,
+      settings: AppSettings(
+        kindleAddress: 'moi@kindle.com',
+        smtpUsername: 'moi@gmail.com',
+        smtpSender: 'moi@gmail.com',
+        downloadImages: download,
+      ),
+      bookTitle: 'Lectures',
+      images: ImageDownloader(_StubBinaryFetcher(jpeg(1200, 800))),
+      now: () => DateTime.utc(2026, 10, 14),
+    );
+
+    test('l\'image est téléchargée et embarquée', () async {
+      await seedWithImage();
+
+      final book = await withImages(download: true).buildBook();
+
+      expect(book.chapters.single.images, hasLength(1));
+      expect(
+        book.chapters.single.contentHtml,
+        isNot(contains('https://exemple.fr/photo.jpg"')),
+      );
+      expect(book.chapters.single.contentHtml, contains('../images/'));
+    });
+
+    test('l\'image disparaît quand le téléchargement est désactivé', () async {
+      await seedWithImage();
+
+      final book = await withImages(download: false).buildBook();
+
+      expect(book.chapters.single.images, isEmpty);
+      expect(book.chapters.single.contentHtml, isNot(contains('<img')));
+    });
+
+    test('le livre produit reste valide avec une image', () async {
+      await seedWithImage();
+
+      final book = await withImages(download: true).buildBook();
+
+      expect(() => EpubBuilder().build(book), returnsNormally);
     });
   });
 
