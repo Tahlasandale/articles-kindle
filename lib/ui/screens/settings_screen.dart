@@ -101,6 +101,16 @@ class SettingsScreen extends ConsumerWidget {
             title: Text(l10n.settingsEpubGrayscale),
             contentPadding: EdgeInsets.zero,
           ),
+          SwitchListTile(
+            value: settings.translateToFrench,
+            onChanged: (v) =>
+                controller.edit((s) => s.copyWith(translateToFrench: v)),
+            title: const Text('Traduire en français (MyMemory)'),
+            subtitle: const Text(
+              'Traduit automatiquement le contenu anglais à l\'ajout.',
+            ),
+            contentPadding: EdgeInsets.zero,
+          ),
           _Field(
             label: l10n.settingsEpubImageWidth,
             value: '${settings.imageMaxWidth}',

@@ -2,16 +2,25 @@ import 'package:articles_kindle/data/article_service.dart';
 import 'package:articles_kindle/data/db/tables.dart';
 import 'package:articles_kindle/data/extraction/extraction_service.dart';
 
+import 'package:articles_kindle/data/translation/translation_service.dart';
+
 /// Fait le lien entre l'extraction et la base : un article est soit « prêt » avec
 /// son contenu, soit « en échec » avec une raison, et rien d'autre ne bouge.
 ///
 /// Le traitement lourd part dans un isolate côté interface ; ici on ne fait que
 /// la règle métier, ce qui la rend testable en Dart pur.
 class ArticleExtractionJob {
-  ArticleExtractionJob(this._articles, this._extraction);
+  ArticleExtractionJob(
+    this._articles,
+    this._extraction, {
+    this.translation,
+    this.shouldTranslate,
+  });
 
   final ArticleService _articles;
   final ExtractionService _extraction;
+  final TranslationService? translation;
+  final bool Function()? shouldTranslate;
 
   /// Traite un article. `fromFeedContent` court-circuite le téléchargement quand
   /// le flux du site fournissait déjà le texte complet.
@@ -45,15 +54,32 @@ class ArticleExtractionJob {
         await _articles.markFailed(articleId, error: reason);
         return outcome;
       case ExtractedArticle():
+        var title = outcome.title;
+        var html = outcome.contentHtml;
+        if (shouldTranslate?.call() == true && translation != null) {
+          if (title != null && title.isNotEmpty) {
+            title = await translation!.translateText(title);
+          }
+          if (html.isNotEmpty) {
+            html = await translation!.translateHtml(html);
+          }
+        }
         await _articles.markReady(
           articleId,
-          title: outcome.title,
+          title: title,
           author: outcome.author,
           siteName: outcome.siteName,
           publishedAt: outcome.publishedAt,
-          contentHtml: outcome.contentHtml,
+          contentHtml: html,
         );
-        return outcome;
+        return ExtractedArticle(
+          title: title,
+          author: outcome.author,
+          siteName: outcome.siteName,
+          publishedAt: outcome.publishedAt,
+          contentHtml: html,
+          plainText: outcome.plainText,
+        );
     }
   }
 

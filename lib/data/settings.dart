@@ -16,6 +16,7 @@ class AppSettings {
     this.grayscaleImages = true,
     this.imageMaxWidth = 800,
     this.sizeLimitMb = 25,
+    this.translateToFrench = false,
     this.themeMode = ThemeMode.system,
   });
 
@@ -30,6 +31,7 @@ class AppSettings {
   final bool grayscaleImages;
   final int imageMaxWidth;
   final int sizeLimitMb;
+  final bool translateToFrench;
   final ThemeMode themeMode;
 
   bool get isSmtpConfigured =>
@@ -47,6 +49,7 @@ class AppSettings {
     bool? grayscaleImages,
     int? imageMaxWidth,
     int? sizeLimitMb,
+    bool? translateToFrench,
     ThemeMode? themeMode,
   }) {
     return AppSettings(
@@ -61,6 +64,7 @@ class AppSettings {
       grayscaleImages: grayscaleImages ?? this.grayscaleImages,
       imageMaxWidth: imageMaxWidth ?? this.imageMaxWidth,
       sizeLimitMb: sizeLimitMb ?? this.sizeLimitMb,
+      translateToFrench: translateToFrench ?? this.translateToFrench,
       themeMode: themeMode ?? this.themeMode,
     );
   }
@@ -77,6 +81,7 @@ class AppSettings {
     'grayscaleImages': '$grayscaleImages',
     'imageMaxWidth': '$imageMaxWidth',
     'sizeLimitMb': '$sizeLimitMb',
+    'translateToFrench': '$translateToFrench',
     'themeMode': themeMode.name,
   };
 
@@ -93,6 +98,7 @@ class AppSettings {
       grayscaleImages: map['grayscaleImages'] != 'false',
       imageMaxWidth: int.tryParse(map['imageMaxWidth'] ?? '') ?? 800,
       sizeLimitMb: int.tryParse(map['sizeLimitMb'] ?? '') ?? 25,
+      translateToFrench: map['translateToFrench'] == 'true',
       themeMode: ThemeMode.values.firstWhere(
         (m) => m.name == map['themeMode'],
         orElse: () => ThemeMode.system,

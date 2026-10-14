@@ -12,6 +12,7 @@ import 'package:articles_kindle/data/secret_store.dart';
 import 'package:articles_kindle/data/db/database.dart';
 import 'package:articles_kindle/data/settings.dart';
 import 'package:articles_kindle/data/settings_backup_service.dart';
+import 'package:articles_kindle/data/translation/translation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -94,10 +95,17 @@ final articleFetcherProvider = Provider<ArticleFetcher>(
   (ref) => DioArticleFetcher(),
 );
 
+final translationServiceProvider = Provider<TranslationService>(
+  (ref) =>
+      MyMemoryTranslationService(fetcher: ref.watch(articleFetcherProvider)),
+);
+
 final extractionJobProvider = Provider<ArticleExtractionJob>(
   (ref) => ArticleExtractionJob(
     ref.watch(articleServiceProvider),
     ExtractionService(ref.watch(articleFetcherProvider)),
+    translation: ref.watch(translationServiceProvider),
+    shouldTranslate: () => ref.watch(currentSettingsProvider).translateToFrench,
   ),
 );
 
