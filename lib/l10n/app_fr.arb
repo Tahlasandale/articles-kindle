@@ -1,0 +1,155 @@
+{
+  "@@locale": "fr",
+
+  "appTitle": "Articles vers Kindle",
+
+  "tabToRead": "À lire",
+  "tabSend": "Envoyer",
+  "tabHistory": "Historique",
+  "tabSettings": "Réglages",
+
+  "statusPending": "En attente",
+  "statusReady": "Prêt",
+  "statusFailed": "Échec",
+  "statusSent": "Envoyé",
+
+  "toReadEmptyTitle": "Aucun article",
+  "toReadEmptyBody": "Partagez un article depuis votre navigateur, ou ajoutez son adresse.",
+  "toReadAddUrl": "Ajouter une adresse",
+  "toReadAddSite": "Articles d'un site",
+  "toReadSearchHint": "Rechercher un article",
+  "toReadSearchEmpty": "Aucun article ne correspond.",
+  "toReadRetry": "Réessayer",
+  "toReadOpenInBrowser": "Ouvrir dans le navigateur",
+  "toReadDelete": "Supprimer",
+  "toReadSelectedCount": "{count, plural, =0{Aucun sélectionné} =1{1 article sélectionné} other{{count} articles sélectionnés}}",
+  "@toReadSelectedCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "addUrlTitle": "Ajouter une adresse",
+  "addUrlHint": "Adresse de l'article",
+  "addUrlPaste": "Coller",
+  "addUrlInvalid": "Cette adresse n'est pas valide.",
+  "addUrlDuplicate": "Cet article est déjà dans la liste.",
+  "addUrlAdd": "Ajouter",
+
+  "addSiteTitle": "Articles d'un site",
+  "addSiteHint": "Adresse du site ou du blog",
+  "addSiteSearch": "Chercher les articles",
+  "addSiteNoFeed": "Aucun flux d'articles n'a été trouvé sur cette page.",
+  "addSiteSelectAll": "Tout cocher",
+  "addSiteSelectNone": "Tout décocher",
+  "addSiteAddSelected": "Ajouter les articles cochés",
+  "addSiteFinding": "Recherche des articles…",
+  "addSiteEmptyFeed": "Ce flux ne contient aucun article.",
+  "addSiteTooMany": "Les {count} derniers articles sont proposés.",
+  "@addSiteTooMany": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "sendTitle": "Envoyer à la Kindle",
+  "sendSummary": "{count} article(s) — environ {size}",
+  "@sendSummary": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "size": { "type": "String" }
+    }
+  },
+  "sendNothing": "Aucun article à envoyer. Ajoutez au moins un article prêt.",
+  "sendButton": "Envoyer à la Kindle",
+  "sendStepExtract": "Préparation des articles",
+  "sendStepBuild": "Génération du livre",
+  "sendStepMail": "Envoi par e-mail",
+  "sendSuccess": "Livre envoyé. Amazon le convertit pour votre Kindle.",
+  "sendTooLargeTitle": "Livre trop lourd",
+  "sendTooLargeBody": "Le livre pèse environ {size}. Amazon refuse les pièces jointes de plus de 50 Mo. Retirez des articles, ou désactivez les images dans les Réglages.",
+  "@sendTooLargeBody": {
+    "placeholders": { "size": { "type": "String" } }
+  },
+  "sendTestButton": "Tester l'envoi",
+  "sendTestTitle": "Test d'envoi",
+  "sendTestSuccess": "Message de test accepté par le serveur.",
+  "sendReorderHint": "Faites glisser pour changer l'ordre des chapitres.",
+
+  "historyEmpty": "Aucun envoi pour l'instant.",
+  "historySentOn": "Envoyé le {date} — {count} article(s), {size}",
+  "@historySentOn": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "count": { "type": "int" },
+      "size": { "type": "String" }
+    }
+  },
+  "historyFailed": "Échec le {date} — {error}",
+  "@historyFailed": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "error": { "type": "String" }
+    }
+  },
+  "historyQueuedAgain": "Remis dans la file",
+  "historyQueuedAgainAction": "Remettre dans la file",
+  "historyPurge": "Purger les articles envoyés",
+  "historyPurgeConfirm": "Supprimer le contenu des {count} articles déjà envoyés ? Les titres et les liens sont conservés.",
+  "@historyPurgeConfirm": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "settingsKindleSection": "Kindle",
+  "settingsKindleAddress": "Adresse Kindle",
+  "settingsKindleAddressHint": "nom@kindle.com",
+  "settingsBookTitle": "Titre du livre",
+  "settingsBookTitleHint": "Laisser vide pour « Lectures du JJ/MM/AAAA »",
+
+  "settingsSmtpSection": "Envoi",
+  "settingsSmtpHost": "Serveur SMTP",
+  "settingsSmtpPort": "Port",
+  "settingsSmtpUsername": "Identifiant",
+  "settingsSmtpPassword": "Mot de passe d'application",
+  "settingsSmtpSender": "Adresse expéditeur",
+  "settingsSmtpSenderHint": "Doit figurer dans les expéditeurs autorisés Amazon",
+  "settingsSmtpTls": "Chiffrement STARTTLS",
+  "settingsSmtpTlsRequired": "Le chiffrement est obligatoire : un envoi en clair est refusé.",
+
+  "settingsEpubSection": "Livre",
+  "settingsEpubImages": "Télécharger les images",
+  "settingsEpubGrayscale": "Images en niveaux de gris",
+  "settingsEpubImageWidth": "Largeur max des images",
+  "settingsEpubSizeLimit": "Taille max avant alerte",
+  "settingsEpubTestHint": "Amazon peut mettre quelques minutes à convertir le livre.",
+
+  "settingsThemeSection": "Apparence",
+  "settingsThemeSystem": "Système",
+  "settingsThemeLight": "Clair",
+  "settingsThemeDark": "Sombre",
+
+  "settingsDataSection": "Données",
+  "settingsPurge": "Purger les articles envoyés",
+
+  "themeToggleTooltip": "Changer de thème",
+
+  "tagAdd": "Étiquette",
+  "tagAddHint": "Nom de l'étiquette",
+  "tagRemove": "Retirer l'étiquette",
+  "tagFilterNone": "Sans étiquette",
+
+  "errorNetwork": "Pas de connexion. Réessayez une fois le réseau revenu.",
+  "errorTimeout": "Le site n'a pas répondu à temps.",
+  "errorHttpStatus": "Le site a répondu {status}.",
+  "@errorHttpStatus": {
+    "placeholders": { "status": { "type": "int" } }
+  },
+  "errorNoContent": "Aucun contenu exploitable n'a été trouvé sur cette page.",
+  "errorTooLarge": "Cette page est trop lourde pour être téléchargée.",
+  "errorAuth": "Authentification refusée. Vérifiez le mot de passe d'application.",
+  "errorSmtpSend": "Le serveur SMTP a refusé le message : {error}",
+  "@errorSmtpSend": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "commonCancel": "Annuler",
+  "commonDelete": "Supprimer",
+  "commonOk": "Ok",
+  "commonClose": "Fermer"
+}
