@@ -20,14 +20,16 @@ if ! command -v java > /dev/null 2>&1; then
 fi
 
 mkdir -p "$cache"
-jar="$(ls "$cache"/epubcheck-*.jar 2> /dev/null | head -1 || true)"
+jar="$(find "$cache" -name 'epubcheck.jar' ! -path '*/sources/*' 2> /dev/null | head -1)"
 
 if [ -z "$jar" ]; then
   echo "Téléchargement d'epubcheck $version…"
   curl -fsSL -o "$cache/epubcheck-$version.zip" "$zip_url"
   unzip -oq "$cache/epubcheck-$version.zip" -d "$cache"
   rm -f "$cache/epubcheck-$version.zip"
-  jar="$(find "$cache" -name 'epubcheck*.jar' ! -name '*sources*' ! -name '*javadoc*' | head -1)"
+  # L'archive contient `epubcheck.jar` et un dossier `lib/` de dépendances :
+  # `java -jar` a besoin des deux, on garde donc l'arborescence telle quelle.
+  jar="$(find "$cache" -name 'epubcheck.jar' | head -1)"
   if [ -z "$jar" ]; then
     echo "aucun jar trouvé dans l'archive epubcheck" >&2
     exit 1

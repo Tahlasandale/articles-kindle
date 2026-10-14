@@ -6,7 +6,9 @@ plugins {
 
 android {
     namespace = "tahlasandale.articles_kindle"
-    compileSdk = flutter.compileSdkVersion
+    // receive_sharing_intent 1.9 exige compileSdk 37. AGP 9.1 recommande 36
+    // au maximum : 37 fonctionne quand même, avec un avertissement.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

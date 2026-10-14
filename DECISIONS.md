@@ -147,3 +147,18 @@ en français.
   d'une checklist de gestes à faire sur le téléphone. Aucun test d'intégration du
   partage.
 - **Pourquoi** : il n'y a pas d'appareil Android branché à cette machine.
+
+## `compileSdk 37`, et le lien symbolique qu'il faut faire une fois
+
+- **Décision** : `android/app/build.gradle.kts` fixe `compileSdk = 37`, et la machine
+  de développement doit avoir `platforms/android-37` pointant sur
+  `platforms/android-37.0`.
+- **Pourquoi** : `receive_sharing_intent` 1.9 compile avec `compileSdk 37` et refuse
+  de compiler contre 36. Or le SDK Manager ne publie plus de plateforme `android-37` :
+  seulement `android-37.0`, sous un nom que Gradle ne reconnaît pas
+  (`Failed to find target with hash string 'android-37'`). C'est le problème de build
+  le plus signalé du plugin — 218 issues ouvertes sur 378 étoiles.
+- **Écart** : AGP 9.1 recommande un `compileSdk` de 36 au maximum ; on accepte son
+  avertissement. Un jour, `flutter.compileSdkVersion` suffira de nouveau : c'est à
+  vérifier à chaque montée de version du plugin, pas une configuration à respecter
+  aveuglément.

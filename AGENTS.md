@@ -86,6 +86,12 @@ ne pas ajouter de fixture qui n'a pas.failé au moins une fois.
   Serif système dans le livre, Libron seulement dans l'app.
 - **`receive_sharing_intent`** exige `android:launchMode="singleTask"` et un
   `intent-filter` `SEND` dans le Manifest, sinon le partage ouvre une seconde instance.
+  Le plugin compile aussi avec `compileSdk 37`, que le SDK Manager ne publie plus sous
+  ce nom : il installe `platforms/android-37.0` et Gradle échoue alors sur
+  `Failed to find target with hash string 'android-37'`. Contournement sur cette machine :
+  `ln -sfn ~/Android/Sdk/platforms/android-37.0 ~/Android/Sdk/platforms/android-37`.
+  C'est le problème de build le plus signalé du plugin — s'il réapparaît, ce n'est pas
+  notre code.
 - **Amazon ignore silencieusement** tout message dont l'expéditeur n'est pas dans la
   liste des expéditeurs autorisés du compte : aucun SMTP ne signale l'erreur. D'où le
   bouton « Tester l'envoi » qui n'allume rien en cas de succès.
